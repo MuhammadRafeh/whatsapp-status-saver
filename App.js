@@ -1,113 +1,113 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  CameraRoll
-} from 'react-native';
+import { Text, View, StyleSheet, PermissionsAndroid, Button, TouchableOpacity } from 'react-native';
+import * as RNFS from 'react-native-fs';
+import Video from 'react-native-video';
+import VideoPlayer from 'react-native-video-controls';
+import Icon from 'react-native-vector-icons/Ionicons';
+import CameraRoll from "@react-native-community/cameraroll";
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+const getPermission = async () => {
+  const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
   );
-};
+  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    console.log('grantedyeah')
+    return true;
+  } else {
+    return false;
+  }
+}
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+
+class App extends React.Component {
+  state = {
+    pdfInfo: []
+  }
+
+
+  fetchDataFromDirectory = async () => {
+    const isGranted = await getPermission();
+    console.log(123)
+    if (!isGranted) {
+      return;
+    }
+    try {
+      // console.log(RNFS.ExternalStorageDirectoryPath)
+      const data = await RNFS.readDir(
+        '/storage/emulated/0/WhatsApp/Media/.Statuses',
+      );
+      const pdfInfo = [];
+      console.log('asdasdasd', data)
+      data.forEach((obj) => {
+        if (obj.isFile()) {
+          console.log(obj)
+          pdfInfo.push({
+            name: obj.name,
+            path: obj.path,
+            size: obj.size,
+            time: obj.mtime,
+            id: this.id++,
+          });
+        }
+      });
+
+      const latest = pdfInfo.sort((a, b) => {
+        const date1 = new Date(a.time);
+        const date2 = new Date(b.time);
+
+        return date2 - date1;
+      });
+
+      this.setState({ pdfInfo: [...latest] });
+    } catch (err) {
+      console.log(err.message, err.code);
+    }
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+  componentDidMount() {
+    this.fetchDataFromDirectory()
+  }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  render() {
+    console.log(this.state.pdfInfo)
+    return (
+      // <StatusSaver />
+      // <Video source={{ uri: "/storage/emulated/0/WhatsApp/Media/.Statuses/0e301a49836543398709e4c592abed87.mp4" }}   // Can be a URL or a local file.
+      //   ref={(ref) => {
+      //     this.player = ref
+      //   }}                                      // Store reference
+      //   onBuffer={this.onBuffer}                // Callback when remote video is buffering
+      //   onError={this.videoError}               // Callback when video cannot be loaded
+      //   style={styles.backgroundVideo} />
+      <>
+        <VideoPlayer
+          source={{ uri: '/storage/emulated/0/WhatsApp/Media/.Statuses/0e301a49836543398709e4c592abed87.mp4' }}
+          navigator={this.props.navigator}
+        />
+        <TouchableOpacity style={{position: 'absolute', bottom: 100, right: 20}} onPress={() => {
+          CameraRoll.save('/storage/emulated/0/WhatsApp/Media/.Statuses/0e301a49836543398709e4c592abed87.mp4', { type: 'auto' })
+        }}>
+          {/* <Button title={'hi'} /> */}
+          <Icon name={'download'} size={40} color={'white'} />
+        </TouchableOpacity>
+      </>
+    )
+  }
+}
 
 export default App;
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  }
+})
