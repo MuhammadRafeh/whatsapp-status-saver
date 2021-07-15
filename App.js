@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, AppState } from 'react-native';
-// import VideoPlayer from 'react-native-video-controls';
+import { View, StyleSheet, AppState, FlatList } from 'react-native';
 import fetchDataFromDirectory from './data/fetchDataFromWhatsApp';
 import PlayerVideo from './components/VideoPlayer';
+import Image from './components/Image';
 
 class App extends React.Component {
   state = {
@@ -10,28 +10,58 @@ class App extends React.Component {
     appState: ''
   }
 
-  // componentDidMount() {
-  //   fetchDataFromDirectory();
+  fetchData = async () => {
+    const data = await fetchDataFromDirectory();
+    this.setState({ pdfInfo: data.pdfInfo })
+  }
   // }
-  
+
   handleAppStateChange = (nextAppState) => {
     //the app from background to front
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      console.log('hi')
+      this.fetchData();
     }
     //save the appState
     this.setState({ appState: nextAppState });
   }
-  componentDidMount(){
-    AppState.addEventListener('change', this.handleAppStateChange);
-   }
 
-      componentWillUnmount() {
-        AppState.removeEventListener('change', this.handleAppStateChange)
-      }
+  componentDidMount() {
+    this.viewableIndex = 0;
+    this.fetchData();
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  onViewableItemsChanged = ({ viewableItems, changed }) => {
+    console.log("Visible items are", viewableItems);
+    console.log("Changed in this iteration", changed);
+    // this.viewableIndex = viewableItems[0]['index']
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
 
   render() {
-    return <PlayerVideo/>
+    console.log(this.state.pdfInfo)
+    // return <PlayerVideo />
+    return <FlatList
+      // onViewableItemsChanged={this.onViewableItemsChanged}
+      viewabilityConfig={{
+        itemVisiblePercentThreshold: 70
+      }}
+      onViewableItemsChanged={this.onViewableItemsChanged}
+      // viewab
+      contentContainerStyle={{backgroundColor: 'white'}}
+      data={this.state.pdfInfo}
+      keyExtractor={item => item.id}
+      ref={ref => this.list = ref}
+      renderItem={({ item, index }) => {
+        // console.log(index)
+        if (item.name.split('.')[1] == 'jpg') return <Image source={item.path} refList={this.list} index={index} />
+        if (item.name.split('.')[1] != 'nomedia') return <PlayerVideo source={item.path} refList={this.list} index={index} />
+        return <View />
+      }}
+    />
   }
 }
 
@@ -41,12 +71,5 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'white'
-  },
-  backgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
   }
 })
