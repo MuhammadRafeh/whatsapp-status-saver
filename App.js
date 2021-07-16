@@ -65,14 +65,11 @@ class App extends React.Component {
         console.log('--------------------> ', this.state.viewableIndex)
         if (item.name.split('.')[1] == 'jpg') return <Image source={item.path} refList={this.list} index={index} isViewable={this.state.viewableIndex == index ? true : false} />
         if (item.name.split('.')[1] != 'nomedia') return <>
-          <View>
-            <Text style={{ color: 'white' }}>{this.state.viewableIndex}</Text>
             <PlayerVideo
               source={item.path}
               refList={this.list}
               index={index}
               isViewable={this.state.viewableIndex == index ? true : false} />
-          </View>
         </>
         return <View />
       }}

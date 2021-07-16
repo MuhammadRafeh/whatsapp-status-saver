@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
-// import VideoPlayer from 'react-native-video-player';
 import Video from 'react-native-video'
 import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CameraRoll from "@react-native-community/cameraroll";
+import Share from 'react-native-share';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,7 +13,6 @@ function secondsToTime(time) {
 }
 
 class PlayerVideo extends React.Component {
-    // console.log(props.source)
     state = {
         paused: true,
         progress: 0,
@@ -43,9 +42,6 @@ class PlayerVideo extends React.Component {
     }
 
     static getDerivedStateFromProps(props, currentState) {
-        // console.log(props.isViewable, currentState.paused)
-        // console.log('get derived',props.viewableIndex, props.index)
-        // console.log('get drived state', props.isViewable, props.index)
         if (props.isViewable && currentState.isViewable) {
             return {
                 paused: false,
@@ -59,28 +55,6 @@ class PlayerVideo extends React.Component {
         }
         return null;
     }
-
-    // shouldComponentUpdate(nextProps, nextState){
-    //     console.log('nextprops',nextProps.isViewable, nextProps.index)
-    //     return true;
-
-    // }
-
-    // componentDidUpdate(prevProps, prevState){
-    //     // if (prevProps.isViewable && !this.state.isViewable){
-    //     //     console.log(222222222222222222222222)
-    //     //     this.setState({
-    //     //         paused: false,
-    //     //         isViewable: true
-    //     //     })
-    //     // } else if (!prevProps.isViewable && this.state.isViewable) {
-    //     //     this.setState({
-    //     //         // paused: false,
-    //     //         isViewable: false
-    //     //     })
-    //     // }
-    //     console.log('++++++++++++++++++++++++++++++++++=', prevProps.isViewable, this.props.isViewable, this.props.index)
-    // }
 
     handleEnd = () => {
         this.setState({
@@ -108,18 +82,11 @@ class PlayerVideo extends React.Component {
     }
 
     render() {
-        // console.log('---===----', this.props.refList.getScrollableNode());
         console.log('========>>>>>>>>>>.', this.props.isViewable, this.props.index)
         const { width, height } = Dimensions.get('window');
         // const height = width * .5625;
         return (
             <View style={{ flex: 1 }}>
-                {/* <VideoPlayer
-                    video={{ uri: props.source }}
-                    videoWidth={width}
-                    // videoHeight={height}
-                    thumbnail={{ uri: props.source }}
-                /> */}
                 <View>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
                         <Video
@@ -156,14 +123,32 @@ class PlayerVideo extends React.Component {
                     </Text>
                 </View>
 
+
+                <TouchableOpacity style={{ position: 'absolute', bottom: 140, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
+                    // await Share.share({ url: 'file//'+this.props.source })
+                    Share.open({
+                        url: 'file:///' + this.props.source
+                    })
+                        .then((res) => {
+                            console.log(res);
+                        })
+                        .catch((err) => {
+                            err && console.log(err);
+                        });
+                }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
+                        <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
+                        <View style={{ width: '39%' }}>
+                            <Text style={{ color: 'white', letterSpacing: 0.1, textAlign: 'center' }} adjustsFontSizeToFit={true} numberOfLines={1}>Share</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={{ position: 'absolute', bottom: 70, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
                     CameraRoll.save(this.props.source, { type: 'auto' })
                 }}>
-                    {/* <Button title={'hi'} /> */}
                     <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
-                        {/* <View> */}
-                            <Icon name={'download'} size={40} color={'white'} />
-                        {/* </View> */}
+                        <Icon name={'ios-download-outline'} size={40} color={'white'} />
                         <View style={{ width: '66%' }}>
                             <Text style={{ color: 'white', letterSpacing: 0.1, textAlign: 'center' }} adjustsFontSizeToFit={true} numberOfLines={1}>Download</Text>
                         </View>
