@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, AppState, FlatList } from 'react-native';
+import { Text, View, StyleSheet, AppState, FlatList } from 'react-native';
 import fetchDataFromDirectory from './data/fetchDataFromWhatsApp';
 import PlayerVideo from './components/VideoPlayer';
 import Image from './components/Image';
@@ -7,7 +7,8 @@ import Image from './components/Image';
 class App extends React.Component {
   state = {
     pdfInfo: [],
-    appState: ''
+    appState: '',
+    viewableIndex: 0
   }
 
   fetchData = async () => {
@@ -26,15 +27,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.viewableIndex = 0;
     this.fetchData();
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   onViewableItemsChanged = ({ viewableItems, changed }) => {
-    console.log("Visible items are", viewableItems);
-    console.log("Changed in this iteration", changed);
-    // this.viewableIndex = viewableItems[0]['index']
+    // console.log("Visible items are", viewableItems);
+    // console.log("Changed in this iteration", changed);
+    try {
+      this.setState({ viewableIndex: viewableItems[0]['index'] })
+    } catch (err) {
+
+    }
   }
 
   componentWillUnmount() {
@@ -42,23 +46,34 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.pdfInfo)
-    // return <PlayerVideo />
     return <FlatList
-      // onViewableItemsChanged={this.onViewableItemsChanged}
+      snapToAlignment={'top'}
+      decelerationRate={'fast'}
       viewabilityConfig={{
-        itemVisiblePercentThreshold: 70
+        // itemVisiblePercentThreshold: 90,
+        viewAreaCoveragePercentThreshold: 60
       }}
+      // extraData={this.state.viewableIndex}
       onViewableItemsChanged={this.onViewableItemsChanged}
-      // viewab
-      contentContainerStyle={{backgroundColor: 'white'}}
+      // scr
+      contentContainerStyle={{ backgroundColor: 'black' }}
       data={this.state.pdfInfo}
       keyExtractor={item => item.id}
       ref={ref => this.list = ref}
       renderItem={({ item, index }) => {
         // console.log(index)
-        if (item.name.split('.')[1] == 'jpg') return <Image source={item.path} refList={this.list} index={index} />
-        if (item.name.split('.')[1] != 'nomedia') return <PlayerVideo source={item.path} refList={this.list} index={index} />
+        console.log('--------------------> ', this.state.viewableIndex)
+        if (item.name.split('.')[1] == 'jpg') return <Image source={item.path} refList={this.list} index={index} isViewable={this.state.viewableIndex == index ? true : false} />
+        if (item.name.split('.')[1] != 'nomedia') return <>
+          <View>
+            <Text style={{ color: 'white' }}>{this.state.viewableIndex}</Text>
+            <PlayerVideo
+              source={item.path}
+              refList={this.list}
+              index={index}
+              isViewable={this.state.viewableIndex == index ? true : false} />
+          </View>
+        </>
         return <View />
       }}
     />

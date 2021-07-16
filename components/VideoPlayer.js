@@ -17,7 +17,8 @@ class PlayerVideo extends React.Component {
     state = {
         paused: true,
         progress: 0,
-        duration: 0
+        duration: 0,
+        isViewable: true
     }
 
     handleMainButtonTouch = () => {
@@ -41,20 +42,60 @@ class PlayerVideo extends React.Component {
         })
     }
 
+    static getDerivedStateFromProps(props, currentState) {
+        // console.log(props.isViewable, currentState.paused)
+        // console.log('get derived',props.viewableIndex, props.index)
+        // console.log('get drived state', props.isViewable, props.index)
+        if (props.isViewable && currentState.isViewable) {
+            return {
+                paused: false,
+                isViewable: false
+            }
+        } else if (!props.isViewable && !currentState.isViewable) {
+            return {
+                paused: true,
+                isViewable: true
+            }
+        }
+        return null;
+    }
+
+    // shouldComponentUpdate(nextProps, nextState){
+    //     console.log('nextprops',nextProps.isViewable, nextProps.index)
+    //     return true;
+
+    // }
+
+    // componentDidUpdate(prevProps, prevState){
+    //     // if (prevProps.isViewable && !this.state.isViewable){
+    //     //     console.log(222222222222222222222222)
+    //     //     this.setState({
+    //     //         paused: false,
+    //     //         isViewable: true
+    //     //     })
+    //     // } else if (!prevProps.isViewable && this.state.isViewable) {
+    //     //     this.setState({
+    //     //         // paused: false,
+    //     //         isViewable: false
+    //     //     })
+    //     // }
+    //     console.log('++++++++++++++++++++++++++++++++++=', prevProps.isViewable, this.props.isViewable, this.props.index)
+    // }
+
     handleEnd = () => {
         this.setState({
             paused: true
         })
         this.player.seek(0);
         try {
-            this.props.refList.scrollToIndex({animated: true, index: this.props.index + 1, viewPosition: 0})
-        } catch(err){
-            
+            this.props.refList.scrollToIndex({ animated: true, index: this.props.index + 1, viewPosition: 0 })
+        } catch (err) {
+
         }
     }
 
     handleProgress = (progress) => {
-        console.log(progress)
+        // console.log(progress)
         this.setState({
             progress: progress.currentTime / this.state.duration
         })
@@ -67,10 +108,12 @@ class PlayerVideo extends React.Component {
     }
 
     render() {
-        const { width } = Dimensions.get('window');
-        const height = width * .5625;
+        // console.log('---===----', this.props.refList.getScrollableNode());
+        console.log('========>>>>>>>>>>.', this.props.isViewable, this.props.index)
+        const { width, height } = Dimensions.get('window');
+        // const height = width * .5625;
         return (
-            <View style={{ flex: 1, paddingTop: 250 }}>
+            <View style={{ flex: 1 }}>
                 {/* <VideoPlayer
                     video={{ uri: props.source }}
                     videoWidth={width}
@@ -82,7 +125,7 @@ class PlayerVideo extends React.Component {
                         <Video
                             paused={this.state.paused}
                             source={{ uri: this.props.source }}
-                            style={{ width: '100%', height: 400 }}
+                            style={{ width: '100%', height }}
                             resizeMode={'contain'}
                             onLoad={this.handleLoad}
                             onProgress={this.handleProgress}
@@ -113,11 +156,18 @@ class PlayerVideo extends React.Component {
                     </Text>
                 </View>
 
-                <TouchableOpacity style={{ position: 'absolute', bottom: 100, right: 20 }} onPress={() => {
+                <TouchableOpacity style={{ position: 'absolute', bottom: 70, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
                     CameraRoll.save(this.props.source, { type: 'auto' })
                 }}>
                     {/* <Button title={'hi'} /> */}
-                    <Icon name={'download'} size={40} color={'white'} />
+                    <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
+                        {/* <View> */}
+                            <Icon name={'download'} size={40} color={'white'} />
+                        {/* </View> */}
+                        <View style={{ width: '66%' }}>
+                            <Text style={{ color: 'white', letterSpacing: 0.1, textAlign: 'center' }} adjustsFontSizeToFit={true} numberOfLines={1}>Download</Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             </View>
         )
@@ -154,4 +204,5 @@ const styles = StyleSheet.create({
 })
 
 // Only render when props changes
-export default React.memo(PlayerVideo, (prevProps, nextProps) => prevProps.source === nextProps.source);
+// export default React.memo(PlayerVideo, (prevProps, nextProps) => prevProps.isViewable === nextProps.isViewable);
+export default PlayerVideo;
