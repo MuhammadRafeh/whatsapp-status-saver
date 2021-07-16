@@ -6,14 +6,21 @@ import Image from './components/Image';
 
 class App extends React.Component {
   state = {
-    pdfInfo: [],
+    pdfInfo: [], //[{id, name, path},...]
     appState: '',
     viewableIndex: 0
   }
 
   fetchData = async () => {
     const data = await fetchDataFromDirectory();
-    this.setState({ pdfInfo: data.pdfInfo })
+    this.setState({ pdfInfo: data.pdfInfo });
+    try{
+      if (data.pdfInfo.length > this.state.pdfInfo.length){
+        this.list.scrollToTop();
+      }
+    } catch(err){
+
+    }
   }
   // }
 

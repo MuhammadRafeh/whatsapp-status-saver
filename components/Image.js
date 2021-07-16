@@ -6,17 +6,6 @@ import CameraRoll from "@react-native-community/cameraroll";
 // const { width, height } = Dimensions.get('window');
 
 const ImageComponent = props => {
-    // console.log(props.source)
-    // const [width, setWidth] = useState('100%')
-    // const [height, setHeight] = useState('500')
-
-    // useEffect(() => {
-    //     Image.getSize('file:///'+props.source, (width, height) => {
-    //         // setWidth(width)
-    //         setHeight(height)
-    //         // setState({ width: width, height: height });
-    //     });
-    // }, [])
 
     return (
         <View style={{ marginVertical: 1 }}>

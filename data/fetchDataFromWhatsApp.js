@@ -9,7 +9,8 @@ const fetchDataFromDirectory = async () => {
     try {
         // console.log(RNFS.ExternalStorageDirectoryPath)
         const data = await RNFS.readDir(
-            '/storage/emulated/0/WhatsApp/Media/.Statuses',
+            // '/storage/emulated/0/WhatsApp/Media/.Statuses',
+            '/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses',
         );
         const pdfInfo = [];
         let id = 0;
@@ -17,11 +18,11 @@ const fetchDataFromDirectory = async () => {
             if (obj.isFile()) {
                 console.log(obj)
                 pdfInfo.push({
+                    id: id++,
                     name: obj.name,
                     path: obj.path,
-                    size: obj.size,
-                    time: obj.mtime,
-                    id: id++,
+                    // size: obj.size,
+                    // time: obj.mtime,
                 });
             }
         });

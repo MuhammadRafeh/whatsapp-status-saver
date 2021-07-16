@@ -122,8 +122,7 @@ class PlayerVideo extends React.Component {
                         {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
                     </Text>
                 </View>
-
-
+                
                 <TouchableOpacity style={{ position: 'absolute', bottom: 140, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
                     // await Share.share({ url: 'file//'+this.props.source })
                     Share.open({
