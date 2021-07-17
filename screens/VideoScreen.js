@@ -12,13 +12,14 @@ class VideoScreen extends React.Component {
     state = {
         pdfInfo: [], //[{id, name, path, time},...]
         appState: '',
-        viewableIndex: 0
+        viewableIndex: 0, //-1 in order to stop all videos from play
+        viewableIndexWas: -1 //when viewableIndex will be -1 then to keep track of that viewableIndexWas using.
     }
 
-    setViewableIndex = (index) => { 
-        // setting viewableIndex because there is case for it, if video is playing and viewableIndex is false then we are setting it in VideoPlayer Comp.
-        this.setState({viewableIndex: index})
-    }
+    // setViewableIndex = (index) => { 
+    //     // setting viewableIndex because there is case for it, if video is playing and viewableIndex is false then we are setting it in VideoPlayer Comp.
+    //     this.setState({viewableIndex: index})
+    // }
 
     fetchData = async () => {
         const data = await fetchDataFromDirectory('videos');
@@ -52,15 +53,15 @@ class VideoScreen extends React.Component {
     componentDidMount() {
         this.isTheirAnyNeedToFetchData = false;
         this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-            // e.preventDefault();
-            console.log('hi')
-            this.setState({viewableIndex: -1})
+            this.setState({viewableIndex: -1, viewableIndexWas: this.state.viewableIndex})
         })
         this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
             if (this.isTheirAnyNeedToFetchData) {
                 this.isTheirAnyNeedToFetchData = false;
                 this.fetchData();
-            }
+            } 
+            this.setState({viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1})
+            // console.log('asdasdasdasdas')
         })
         this.videoHeight = height;
         this.dataLength = 0;
@@ -69,8 +70,8 @@ class VideoScreen extends React.Component {
     }
     
     componentWillUnmount() {
-        this.tabPressListener.remove()
-        this.tabPressListenerFocus.remove()
+        this.tabPressListenerBlur();
+        this.tabPressListenerFocus();
     }
     
     onViewableItemsChanged = ({ viewableItems, changed }) => {
@@ -88,7 +89,7 @@ class VideoScreen extends React.Component {
     }
     
     render() {
-        // console.log(this.props.navigation.isFocused())
+        // console.log(this.props.navigation)
         return <AnimatedFlatList
         onLayout={(e) => {
             const { height } = e.nativeEvent.layout;

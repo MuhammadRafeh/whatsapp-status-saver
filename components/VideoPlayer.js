@@ -19,9 +19,10 @@ class PlayerVideo extends React.Component {
     }
 
     handleMainButtonTouch = () => {
-        if (!this.props.isViewable){ //Checking if parent has no record that this is visible then telling the parent state present index.
-            this.props.setViewableIndex(this.props.index);
-        }
+        // if (!this.props.isViewable){ //Checking if parent has no record that this is visible then telling the parent state present index.
+        //     this.props.setViewableIndex(this.props.index);
+        //     console.log('hi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        // }
         if (this.state.progress >= 1) {
             this.player.seek(0);
         }

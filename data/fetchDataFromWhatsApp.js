@@ -16,7 +16,7 @@ const fetchDataFromDirectory = async (type) => {
         let id = 0;
         data.forEach((obj) => {
             if (obj.isFile()) {
-                console.log(obj)
+                // console.log(obj)
                 if (obj.name.split('.')[1] != 'nomedia') {
                     if (type == 'images' && obj.name.split('.')[1] == 'jpg') {
                         pdfInfo.push({
