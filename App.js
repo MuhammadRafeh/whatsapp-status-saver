@@ -1,94 +1,50 @@
 import React from 'react';
-import { Text, View, StyleSheet, AppState, FlatList } from 'react-native';
-import fetchDataFromDirectory from './data/fetchDataFromWhatsApp';
-import PlayerVideo from './components/VideoPlayer';
-import Image from './components/Image';
+import { Text, View, StatusBar, StyleSheet } from 'react-native';
+import TopTabNavigator from './navigators/TopTabNavigator';
+import { NavigationContainer } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-class App extends React.Component {
-  state = {
-    pdfInfo: [], //[{id, name, path},...]
-    appState: '',
-    viewableIndex: 0
-  }
-
-  fetchData = async () => {
-    const data = await fetchDataFromDirectory();
-    this.setState({ pdfInfo: data.pdfInfo });
-    try{
-      if (data.pdfInfo.length > this.state.pdfInfo.length){
-        this.list.scrollToTop();
-      }
-    } catch(err){
-
-    }
-  }
-  // }
-
-  handleAppStateChange = (nextAppState) => {
-    //the app from background to front
-    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      this.fetchData();
-    }
-    //save the appState
-    this.setState({ appState: nextAppState });
-  }
-
-  componentDidMount() {
-    this.fetchData();
-    AppState.addEventListener('change', this.handleAppStateChange);
-  }
-
-  onViewableItemsChanged = ({ viewableItems, changed }) => {
-    // console.log("Visible items are", viewableItems);
-    // console.log("Changed in this iteration", changed);
-    try {
-      this.setState({ viewableIndex: viewableItems[0]['index'] })
-    } catch (err) {
-
-    }
-  }
-
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange)
-  }
-
-  render() {
-    return <FlatList
-      snapToAlignment={'top'}
-      decelerationRate={'fast'}
-      viewabilityConfig={{
-        // itemVisiblePercentThreshold: 90,
-        viewAreaCoveragePercentThreshold: 60
-      }}
-      // extraData={this.state.viewableIndex}
-      onViewableItemsChanged={this.onViewableItemsChanged}
-      // scr
-      contentContainerStyle={{ backgroundColor: 'black' }}
-      data={this.state.pdfInfo}
-      keyExtractor={item => item.id}
-      ref={ref => this.list = ref}
-      renderItem={({ item, index }) => {
-        // console.log(index)
-        console.log('--------------------> ', this.state.viewableIndex)
-        if (item.name.split('.')[1] == 'jpg') return <Image source={item.path} refList={this.list} index={index} isViewable={this.state.viewableIndex == index ? true : false} />
-        if (item.name.split('.')[1] != 'nomedia') return <>
-            <PlayerVideo
-              source={item.path}
-              refList={this.list}
-              index={index}
-              isViewable={this.state.viewableIndex == index ? true : false} />
-        </>
-        return <View />
-      }}
-    />
-  }
+const App = () => {
+  return (
+    <>
+      <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
+      <View
+        style={styles.header}
+      >
+        <View style={styles.labelContainer}>
+          <Text style={styles.label}>WhatsApp Status Saver</Text>
+        </View>
+        <View style={styles.settingContainer}>
+          <Icon name={'settings'} size={20} color={'white'} />
+        </View>
+      </View>
+      <NavigationContainer>
+        <TopTabNavigator />
+      </NavigationContainer>
+    </>
+  );
 }
 
 export default App;
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: 'white'
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'black'
+  },
+  labelContainer: {
+    marginTop: 15,
+    marginLeft: 15
+  },
+  label: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 19
+  },
+  settingContainer: {
+    marginRight: 15,
+    marginTop: 15
   }
 })

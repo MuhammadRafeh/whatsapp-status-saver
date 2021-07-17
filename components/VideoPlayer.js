@@ -6,8 +6,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CameraRoll from "@react-native-community/cameraroll";
 import Share from 'react-native-share';
 
-const { width, height } = Dimensions.get('window');
-
 function secondsToTime(time) {
     return ~~(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60;
 }
@@ -21,7 +19,9 @@ class PlayerVideo extends React.Component {
     }
 
     handleMainButtonTouch = () => {
-
+        if (!this.props.isViewable){ //Checking if parent has no record that this is visible then telling the parent state present index.
+            this.props.setViewableIndex(this.props.index);
+        }
         if (this.state.progress >= 1) {
             this.player.seek(0);
         }
@@ -48,6 +48,7 @@ class PlayerVideo extends React.Component {
                 isViewable: false
             }
         } else if (!props.isViewable && !currentState.isViewable) {
+            console.log('asdasaaaaaaaaaaaaaaaaaaaaaa')
             return {
                 paused: true,
                 isViewable: true
@@ -82,7 +83,7 @@ class PlayerVideo extends React.Component {
     }
 
     render() {
-        console.log('========>>>>>>>>>>.', this.props.isViewable, this.props.index)
+        // console.log('========>>>>>>>>>>.', this.props.isViewable, this.props.index)
         const { width, height } = Dimensions.get('window');
         // const height = width * .5625;
         return (
@@ -92,7 +93,7 @@ class PlayerVideo extends React.Component {
                         <Video
                             paused={this.state.paused}
                             source={{ uri: this.props.source }}
-                            style={{ width: '100%', height }}
+                            style={{ width: '100%', height: this.props.height }}
                             resizeMode={'contain'}
                             onLoad={this.handleLoad}
                             onProgress={this.handleProgress}

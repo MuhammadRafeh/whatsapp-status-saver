@@ -1,14 +1,19 @@
-// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import React from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import ImageScreen from '../screens/ImageScreen';
+import VideoScreen from '../screens/VideoScreen';
 
-// const Tab = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
-// function MyTabs() {
-//   return (
-//     <Tab.Navigator>
-//       <Tab.Screen name="Home" component={HomeScreen} />
-//       <Tab.Screen name="Settings" component={SettingsScreen} />
-//     </Tab.Navigator>
-//   );
-// }
+function MyTabs() {
+    return (
+        <>
+            <Tab.Navigator tabBarOptions={{style: {backgroundColor: 'black'}, activeTintColor: 'white'}}>
+                <Tab.Screen name="Videos" component={VideoScreen} />
+                <Tab.Screen name="Images" component={ImageScreen} />
+            </Tab.Navigator>
+        </>
+    );
+}
 
-// export default MyTabs;
+export default MyTabs;

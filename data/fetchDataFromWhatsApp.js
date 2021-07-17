@@ -1,7 +1,7 @@
 import writeExternalStoragePermission from "../permissions/writeExternalStorage";
 import * as RNFS from 'react-native-fs';
 
-const fetchDataFromDirectory = async () => {
+const fetchDataFromDirectory = async (type) => {
     const isGranted = await writeExternalStoragePermission();
     if (!isGranted) {
         return;
@@ -17,13 +17,25 @@ const fetchDataFromDirectory = async () => {
         data.forEach((obj) => {
             if (obj.isFile()) {
                 console.log(obj)
-                pdfInfo.push({
-                    id: id++,
-                    name: obj.name,
-                    path: obj.path,
-                    // size: obj.size,
-                    // time: obj.mtime,
-                });
+                if (obj.name.split('.')[1] != 'nomedia') {
+                    if (type == 'images' && obj.name.split('.')[1] == 'jpg') {
+                        pdfInfo.push({
+                            id: id++,
+                            name: obj.name,
+                            path: obj.path,
+                            time: obj.mtime,
+                            // size: obj.size,
+                        });
+                    } else if (type == 'videos' && obj.name.split('.')[1] == 'mp4') {
+                        pdfInfo.push({
+                            id: id++,
+                            name: obj.name,
+                            path: obj.path,
+                            time: obj.mtime,
+                            // size: obj.size,
+                        });
+                    }
+                }
             }
         });
 
