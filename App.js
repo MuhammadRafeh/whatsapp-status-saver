@@ -1,8 +1,12 @@
 import React from 'react';
-import { Text, View, StatusBar, StyleSheet } from 'react-native';
+import { Text, View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import TopTabNavigator from './navigators/TopTabNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import playSound from './sounds/playSoundFunc';
+
 
 const App = () => {
   return (
@@ -15,7 +19,11 @@ const App = () => {
           <Text style={styles.label}>WhatsApp Status Saver</Text>
         </View>
         <View style={styles.settingContainer}>
-          <Icon name={'settings'} size={20} color={'white'} />
+          <TouchableOpacity onPress={() => {
+            playSound();
+          }}>
+            <Icon name={'settings'} size={20} color={'white'} />
+          </TouchableOpacity>
         </View>
       </View>
       <NavigationContainer>

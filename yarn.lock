@@ -5436,6 +5436,11 @@ react-native-share@^6.3.0:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-6.3.0.tgz#5422f871055033adbf2084cddb729368f890bd8a"
   integrity sha512-8DqJPwSk4bMPHRGUfpbvSBQlFr6cMLAtw4eJIDphPObZ23o5Klr4TBFQouCJhUI0y2BdobNOQ2D/Q2FMYPFOCw==
 
+react-native-sound@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.11.0.tgz#ad60b55ba8c6dc89917f381ad3713f2738de530f"
+  integrity sha512-4bGAZfni6E2L695NQjOZwNLBQGXgBGYC4Sy+h99K5h0HqNZjCqR0+aLel+ezASxEJDpaH83gylNObXpiqJgdwg==
+
 react-native-tab-view@^2.16.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.16.0.tgz#cae72c7084394bd328fac5fefb86cd966df37a86"
