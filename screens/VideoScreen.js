@@ -10,7 +10,7 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class VideoScreen extends React.Component {
     state = {
-        pdfInfo: [], //[{id, name, path},...]
+        pdfInfo: [], //[{id, name, path, time},...]
         appState: '',
         viewableIndex: 0
     }
@@ -39,17 +39,28 @@ class VideoScreen extends React.Component {
     handleAppStateChange = (nextAppState) => {
         //the app from background to front
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-            this.fetchData();
+            if (this.props.navigation.isFocused()){
+                this.fetchData();
+            } else {
+                this.isTheirAnyNeedToFetchData = true;
+            }
         }
         //save the appState
         this.setState({ appState: nextAppState });
     }
 
     componentDidMount() {
-        this.tabPressListener = this.props.navigation.addListener('blur', e => {
+        this.isTheirAnyNeedToFetchData = false;
+        this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
             // e.preventDefault();
             console.log('hi')
             this.setState({viewableIndex: -1})
+        })
+        this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
+            if (this.isTheirAnyNeedToFetchData) {
+                this.isTheirAnyNeedToFetchData = false;
+                this.fetchData();
+            }
         })
         this.videoHeight = height;
         this.dataLength = 0;
@@ -59,6 +70,7 @@ class VideoScreen extends React.Component {
     
     componentWillUnmount() {
         this.tabPressListener.remove()
+        this.tabPressListenerFocus.remove()
     }
     
     onViewableItemsChanged = ({ viewableItems, changed }) => {
