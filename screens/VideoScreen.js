@@ -150,7 +150,7 @@ class VideoScreen extends React.Component {
                     refList={this.list}
                     height={this.videoHeight}
                     index={index}
-                    setViewableIndex={this.setViewableIndex}
+                    // setViewableIndex={this.setViewableIndex}
                     isViewable={this.state.viewableIndex == index ? true : false} />
             }}
             ListEmptyComponent={() => {

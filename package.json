@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-community/cameraroll": "^4.0.4",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/material-top-tabs": "^5.3.15",
@@ -19,6 +20,7 @@
     "react-native": "0.64.2",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-modal": "^12.0.2",
     "react-native-progress": "^5.0.0",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.2.0",
