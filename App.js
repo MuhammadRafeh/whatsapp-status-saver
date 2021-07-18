@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import playSound from './sounds/playSoundFunc';
+import button from './sounds/playSoundFunc';
 
 
 const App = () => {
@@ -20,7 +20,7 @@ const App = () => {
         </View>
         <View style={styles.settingContainer}>
           <TouchableOpacity onPress={() => {
-            playSound();
+            button.play();
           }}>
             <Icon name={'settings'} size={20} color={'white'} />
           </TouchableOpacity>

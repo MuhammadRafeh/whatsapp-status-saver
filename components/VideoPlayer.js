@@ -5,6 +5,7 @@ import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CameraRoll from "@react-native-community/cameraroll";
 import Share from 'react-native-share';
+import button from '../sounds/playSoundFunc';
 
 function secondsToTime(time) {
     return ~~(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60;
@@ -127,6 +128,11 @@ class PlayerVideo extends React.Component {
                 
                 <TouchableOpacity style={{ position: 'absolute', bottom: 140, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
                     // await Share.share({ url: 'file//'+this.props.source })
+                    button.play((success) => {
+                        if (success) {
+                            button.stop();
+                        }
+                    });
                     Share.open({
                         url: 'file:///' + this.props.source
                     })
@@ -146,6 +152,11 @@ class PlayerVideo extends React.Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ position: 'absolute', bottom: 70, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
+                    button.play((success) => {
+                        if (success) {
+                            button.stop();
+                        }
+                    });
                     CameraRoll.save(this.props.source, { type: 'auto' })
                 }}>
                     <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
