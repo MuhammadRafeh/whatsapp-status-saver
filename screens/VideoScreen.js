@@ -13,7 +13,7 @@ class VideoScreen extends React.Component {
         pdfInfo: [], //[{id, name, path, time},...]
         appState: '',
         viewableIndex: 0, //-1 in order to stop all videos from play
-        viewableIndexWas: -1 //when viewableIndex will be -1 then to keep track of that viewableIndexWas using.
+        viewableIndexWas: -1 //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
     }
 
     // setViewableIndex = (index) => { 
@@ -60,7 +60,7 @@ class VideoScreen extends React.Component {
                 this.isTheirAnyNeedToFetchData = false;
                 this.fetchData();
             } 
-            this.setState({viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1})
+            this.setState({viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1}) //when we focus from this we are running the video
             // console.log('asdasdasdasdas')
         })
         this.videoHeight = height;

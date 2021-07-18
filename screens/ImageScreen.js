@@ -6,8 +6,6 @@ import Image from '../components/Image';
 
 const { width, height } = Dimensions.get('window');
 
-// const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 class ImageScreen extends React.Component {
     state = {
         pdfInfo: [], //[{id, name, path, time},...]
@@ -20,8 +18,9 @@ class ImageScreen extends React.Component {
         this.setState({ pdfInfo: data.pdfInfo });
     }
 
+    //We are seeing if we need to scroll to top or not
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.pdfInfo.length > this.dataLength) { //We are seeing if we need to scroll to top or not
+        if (this.state.pdfInfo.length > this.dataLength) {
             this.dataLength = this.state.pdfInfo.length;
             try {
                 this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
@@ -34,37 +33,36 @@ class ImageScreen extends React.Component {
     handleAppStateChange = (nextAppState) => {
         //the app from background to front
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-            this.fetchData();
+            if (this.props.navigation.isFocused()) {
+                this.fetchData();
+            } else {
+                this.isTheirAnyNeedToFetchData = true;
+            }
         }
         //save the appState
         this.setState({ appState: nextAppState });
     }
 
     componentDidMount() {
-        this.videoHeight = height;
+        this.isTheirAnyNeedToFetchData = false;
+        this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
+            if (this.isTheirAnyNeedToFetchData) {
+                this.isTheirAnyNeedToFetchData = false;
+                this.fetchData();
+            }
+        })
         this.dataLength = 0;
         this.fetchData();
         AppState.addEventListener('change', this.handleAppStateChange);
     }
 
-    // onViewableItemsChanged = ({ viewableItems, changed }) => {
-    //     try {
-    //         this.setState({ viewableIndex: viewableItems[0]['index'] })
-    //     } catch (err) {
-
-    //     }
-    // }
-
     componentWillUnmount() {
+        this.tabPressListenerFocus();
         AppState.removeEventListener('change', this.handleAppStateChange)
     }
 
     render() {
         return <FlatList
-            onLayout={(e) => {
-                const { height } = e.nativeEvent.layout;
-                this.videoHeight = height;
-            }}
             decelerationRate={'fast'}
             scrollEventThrottle={16}
             viewabilityConfig={{
@@ -76,11 +74,12 @@ class ImageScreen extends React.Component {
             keyExtractor={item => item.id}
             ref={ref => this.list = ref}
             renderItem={({ item, index }) => {
-                return <Image 
-                source={item.path} 
-                refList={this.list} 
-                index={index} 
-                isViewable={this.state.viewableIndex == index ? true : false} />
+                return <Image
+                    source={item.path}
+                // refList={this.list} 
+                // index={index} 
+                // isViewable={this.state.viewableIndex == index ? true : false} 
+                />
             }}
             ListEmptyComponent={() => {
                 return <View style={{ backgroundColor: '#111212', justifyContent: 'center', alignItems: 'center', height: height - 40 }}>
