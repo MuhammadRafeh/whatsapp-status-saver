@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, AppState, FlatList, Animated, Dimensions } from
 import fetchDataFromDirectory from '../data/fetchDataFromWhatsApp';
 import PlayerVideo from '../components/VideoPlayer';
 import Image from '../components/Image';
+import { connect } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 
@@ -10,7 +11,7 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class VideoScreen extends React.Component {
     state = {
-        pdfInfo: [], //[{id, name, path, time},...]
+        videosData: [], //[{id, name, path, time},...]
         appState: '',
         viewableIndex: 0, //-1 in order to stop all videos from play
         viewableIndexWas: -1 //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
@@ -21,78 +22,78 @@ class VideoScreen extends React.Component {
     //     this.setState({viewableIndex: index})
     // }
 
-    fetchData = async () => {
-        const data = await fetchDataFromDirectory('videos');
-        this.setState({ pdfInfo: data.pdfInfo });
+    // fetchData = async () => {
+    //     const data = await fetchDataFromDirectory('videos');
+    //     this.setState({ pdfInfo: data.pdfInfo });
+    // }
+
+    static getDerivedStateFromProps(props, currentState) {
+        
+        if (props.videosData.length >= 0) {
+            return {
+                videosData: [...props.videosData]
+            }
+        }
+        return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.pdfInfo.length > this.dataLength) { //We are seeing if we need to scroll to top or not
-            this.dataLength = this.state.pdfInfo.length;
-            try {
+        console.log(this.props.navigation.isFocused())
+        if (this.state.videosData.length > this.dataLength) { //We are seeing if we need to scroll to top or not
+            this.dataLength = this.state.videosData.length;
+            // try {
+            //     this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+            // } catch (err) {
+
+            // }
+            if (this.props.navigation.isFocused()) {
                 this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
-            } catch (err) {
-
-            }
-        }
-    }
-
-    handleAppStateChange = (nextAppState) => {
-        //the app from background to front
-        if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-            if (this.props.navigation.isFocused()){
-                this.fetchData();
             } else {
-                this.isTheirAnyNeedToFetchData = true;
+                this.isTheirAnyNeedToScrollToTop = true;
             }
         }
-        //save the appState
-        this.setState({ appState: nextAppState });
     }
 
+    
     componentDidMount() {
-        this.isTheirAnyNeedToFetchData = false;
+        this.isTheirAnyNeedToScrollToTop = false;
         this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-            this.setState({viewableIndex: -1, viewableIndexWas: this.state.viewableIndex})
+            this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex })
         })
         this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
-            if (this.isTheirAnyNeedToFetchData) {
-                this.isTheirAnyNeedToFetchData = false;
-                this.fetchData();
-            } 
-            this.setState({viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1}) //when we focus from this we are running the video
+            if (this.isTheirAnyNeedToScrollToTop) {
+                this.isTheirAnyNeedToScrollToTop = false;
+                this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+            }
+            //when we focus from this we are running the video
+            this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1 })
             // console.log('asdasdasdasdas')
         })
         this.videoHeight = height;
         this.dataLength = 0;
-        this.fetchData();
-        AppState.addEventListener('change', this.handleAppStateChange);
+        // this.fetchData();
     }
-    
+
     componentWillUnmount() {
         this.tabPressListenerBlur();
         this.tabPressListenerFocus();
     }
-    
+
     onViewableItemsChanged = ({ viewableItems, changed }) => {
         // console.log("Visible items are", viewableItems);
         // console.log("Changed in this iteration", changed);
         try {
             this.setState({ viewableIndex: viewableItems[0]['index'] })
         } catch (err) {
-            
+
         }
     }
-    
-    componentWillUnmount() {
-        AppState.removeEventListener('change', this.handleAppStateChange)
-    }
-    
+
     render() {
-        // console.log(this.props.navigation)
+        console.log('==========================', this.props.videoData)
         return <AnimatedFlatList
-        onLayout={(e) => {
-            const { height } = e.nativeEvent.layout;
+            onLayout={(e) => {
+                const { height } = e.nativeEvent.layout;
                 this.videoHeight = height;
             }}
             // onResponderRelease={e => {console.log(e.nativeEvent.pageY)}}
@@ -140,7 +141,7 @@ class VideoScreen extends React.Component {
             onViewableItemsChanged={this.onViewableItemsChanged}
             // scr
             contentContainerStyle={styles.screen}
-            data={this.state.pdfInfo}
+            data={this.state.videosData}
             keyExtractor={item => item.id}
             ref={ref => this.list = ref}
             renderItem={({ item, index }) => {
@@ -156,7 +157,7 @@ class VideoScreen extends React.Component {
             ListEmptyComponent={() => {
                 return <View style={{ backgroundColor: '#111212', justifyContent: 'center', alignItems: 'center', height: height - 40 }}>
                     {
-                        this.state.pdfInfo.length == 0 && (
+                        this.props.videosData.length == 0 && (
                             <>
                                 <Text style={{ color: 'grey' }}>Which WhatsApp You are using? Set from settings.</Text>
                                 <Text style={{ color: 'grey' }}>OR</Text>
@@ -170,7 +171,13 @@ class VideoScreen extends React.Component {
     }
 }
 
-export default VideoScreen;
+const mapStateToProps = state => {
+    return {
+        videosData: state.media.videos //[{id, name, path, time},...]
+    }
+} 
+
+export default connect(mapStateToProps, null)(VideoScreen);
 
 const styles = StyleSheet.create({
     screen: {

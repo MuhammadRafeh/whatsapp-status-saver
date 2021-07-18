@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Button, StatusBar, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Button, StatusBar, AppState, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import TopTabNavigator from './navigators/TopTabNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,6 +7,9 @@ import Modal from 'react-native-modal';
 import Tick from './assets/tick.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import button from './sounds/playSoundFunc';
+import { Provider, useDispatch } from "react-redux";
+import store from './redux/store';
+import { setMedia } from './redux/actions';
 
 const storeData = async (value) => {
   try {
@@ -22,21 +25,33 @@ const App = () => {
   const [isBusinessWhatsApp, setIsBusinessWhatsApp] = useState(false);
   const [isYoWhatsApp, setIsYoWhatsApp] = useState(false);
   const [whichWhatsApp, setWhichWhatsApp] = useState('whatsapp'); //whatsapp, Bwhatsapp, Ywhatsapp
+  const [whichWhatsAppInitialValue, setWhichWhatsAppInitialValue] = useState('');
+
+  const dispatch = useDispatch();
+
+
+  const handleAppStateChange = (newState) => {
+    if (newState === "active") {
+      dispatch(setMedia());
+    }
+  }
 
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem('@whichwhatsapp')
       if (value !== null) {
-        if (value == 'Bwhatsapp'){
+        if (value == 'Bwhatsapp') {
           setIsWhatsApp(false);
           setIsBusinessWhatsApp(true);
           setIsYoWhatsApp(false);
           setWhichWhatsApp(value)
+          setWhichWhatsAppInitialValue(value);
         } else if (value == 'Ywhatsapp') {
           setIsWhatsApp(false);
           setIsBusinessWhatsApp(false);
           setIsYoWhatsApp(true);
           setWhichWhatsApp(value)
+          setWhichWhatsAppInitialValue(value);
         }
       }
     } catch (e) {
@@ -51,8 +66,10 @@ const App = () => {
       }
     });
 
-    if (isSubmit) {
+    if (isSubmit && whichWhatsApp != whichWhatsAppInitialValue) {
       storeData(whichWhatsApp);
+      dispatch(setMedia());
+
     }
 
     setModalVisible(!isModalVisible);
@@ -60,6 +77,10 @@ const App = () => {
 
   useEffect(() => {
     getData();
+    dispatch(setMedia());
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => AppState.removeEventListener('change', handleAppStateChange)
   }, [])
 
   const handleOptionPress = type => {
@@ -159,7 +180,15 @@ const App = () => {
   );
 }
 
-export default App;
+const AppWrapper = () => {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
+}
+
+export default AppWrapper;
 
 const styles = StyleSheet.create({
   header: {

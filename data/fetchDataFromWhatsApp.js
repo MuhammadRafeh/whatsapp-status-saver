@@ -2,7 +2,7 @@ import writeExternalStoragePermission from "../permissions/writeExternalStorage"
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const fetchDataFromDirectory = async (type) => {
+const fetchDataFromDirectory = async () => {
     const isGranted = await writeExternalStoragePermission();
     if (!isGranted) {
         return;
@@ -30,22 +30,23 @@ const fetchDataFromDirectory = async (type) => {
             // '/storage/emulated/0/WhatsApp/Media/.Statuses',
             dir
         );
-        const pdfInfo = [];
+        const images = [];
+        const videos = [];
         let id = 0;
         data.forEach((obj) => {
             if (obj.isFile()) {
                 // console.log(obj)
                 if (obj.name.split('.')[1] != 'nomedia') {
-                    if (type == 'images' && obj.name.split('.')[1] == 'jpg') {
-                        pdfInfo.push({
+                    if (obj.name.split('.')[1] == 'jpg') {
+                        images.push({
                             id: id++,
                             name: obj.name,
                             path: obj.path,
                             time: obj.mtime,
                             // size: obj.size,
                         });
-                    } else if (type == 'videos' && obj.name.split('.')[1] == 'mp4') {
-                        pdfInfo.push({
+                    } else if (obj.name.split('.')[1] == 'mp4') {
+                        videos.push({
                             id: id++,
                             name: obj.name,
                             path: obj.path,
@@ -57,14 +58,23 @@ const fetchDataFromDirectory = async (type) => {
             }
         });
 
-        const latest = pdfInfo.sort((a, b) => {
+        const imgLatest = images.sort((a, b) => {
             const date1 = new Date(a.time);
             const date2 = new Date(b.time);
 
             return date2 - date1;
         });
 
-        return { pdfInfo: [...latest] }
+        const vidLatest = videos.sort((a, b) => {
+            const date1 = new Date(a.time);
+            const date2 = new Date(b.time);
+
+            return date2 - date1;
+        });
+
+        console.log(vidLatest, imgLatest)
+        // console.log(imgLatest)
+        return { videos: [...vidLatest], images: [...imgLatest] }
     } catch (err) {
         console.log(err.message, err.code);
     }
