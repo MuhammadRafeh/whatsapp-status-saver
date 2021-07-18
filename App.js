@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Button, StatusBar, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import TopTabNavigator from './navigators/TopTabNavigator';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,35 +8,77 @@ import Tick from './assets/tick.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import button from './sounds/playSoundFunc';
 
+const storeData = async (value) => {
+  try {
+    await AsyncStorage.setItem('@whichwhatsapp', value)
+  } catch (e) {
+    // saving error
+  }
+}
+
 const App = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isWhatsApp, setIsWhatsApp] = useState(true);
   const [isBusinessWhatsApp, setIsBusinessWhatsApp] = useState(false);
   const [isYoWhatsApp, setIsYoWhatsApp] = useState(false);
+  const [whichWhatsApp, setWhichWhatsApp] = useState('whatsapp'); //whatsapp, Bwhatsapp, Ywhatsapp
 
-  const toggleModal = () => {
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@whichwhatsapp')
+      if (value !== null) {
+        if (value == 'Bwhatsapp'){
+          setIsWhatsApp(false);
+          setIsBusinessWhatsApp(true);
+          setIsYoWhatsApp(false);
+          setWhichWhatsApp(value)
+        } else if (value == 'Ywhatsapp') {
+          setIsWhatsApp(false);
+          setIsBusinessWhatsApp(false);
+          setIsYoWhatsApp(true);
+          setWhichWhatsApp(value)
+        }
+      }
+    } catch (e) {
+      // error reading value
+    }
+  }
+
+  const toggleModal = (isSubmit = false) => {
     button.play((success) => {
       if (success) {
         button.stop();
       }
     });
+
+    if (isSubmit) {
+      storeData(whichWhatsApp);
+    }
+
     setModalVisible(!isModalVisible);
   };
 
+  useEffect(() => {
+    getData();
+  }, [])
+
   const handleOptionPress = type => {
-    if (type == 'whatsapp' && !isWhatsApp){
+    if (type == 'whatsapp' && !isWhatsApp) {
       setIsWhatsApp(true);
       setIsBusinessWhatsApp(false);
       setIsYoWhatsApp(false);
-    } else if (type == 'Bwhatsapp' && !isBusinessWhatsApp){
+      setWhichWhatsApp('whatsapp');
+    } else if (type == 'Bwhatsapp' && !isBusinessWhatsApp) {
       setIsWhatsApp(false);
       setIsBusinessWhatsApp(true);
       setIsYoWhatsApp(false);
-    } else if (type == 'Ywhatsapp' && !isYoWhatsApp){
+      setWhichWhatsApp('Bwhatsapp')
+    } else if (type == 'Ywhatsapp' && !isYoWhatsApp) {
       setIsWhatsApp(false);
       setIsBusinessWhatsApp(false);
       setIsYoWhatsApp(true);
-    } 
+      setWhichWhatsApp('Ywhatsapp')
+    }
   }
 
   return (
@@ -90,7 +132,7 @@ const App = () => {
           </View>
 
           <View style={{ width: '80%' }}>
-            <Button title="Done" onPress={toggleModal} color={'grey'} />
+            <Button title="Done" onPress={toggleModal.bind(null, true)} color={'grey'} />
           </View>
         </View>
       </Modal>

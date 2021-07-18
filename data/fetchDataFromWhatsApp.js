@@ -1,16 +1,34 @@
 import writeExternalStoragePermission from "../permissions/writeExternalStorage";
 import * as RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const fetchDataFromDirectory = async (type) => {
     const isGranted = await writeExternalStoragePermission();
     if (!isGranted) {
         return;
     }
+    
     try {
         // console.log(RNFS.ExternalStorageDirectoryPath)
+        let dir = '/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses';
+        const value = await AsyncStorage.getItem('@whichwhatsapp');
+        if (value !== null) {
+            if (value == 'whatsapp'){
+                dir = '/storage/emulated/0/WhatsApp/Media/.Statuses';
+            }
+            else if (value == 'Ywhatsapp'){
+                dir = '/storage/emulated/0/YoWhatsApp/Media/.Statuses';
+            }
+            // else if (value == 'Bwhatsapp'){
+
+            // }
+        }
+        // if (Wtype == 'whatsapp'){
+        //     dir
+        // }
         const data = await RNFS.readDir(
             // '/storage/emulated/0/WhatsApp/Media/.Statuses',
-            '/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses',
+            dir
         );
         const pdfInfo = [];
         let id = 0;
