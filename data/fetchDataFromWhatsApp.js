@@ -32,14 +32,15 @@ const fetchDataFromDirectory = async () => {
         );
         const images = [];
         const videos = [];
-        let id = 0;
+        let imgId = 0;
+        let vidId = 0;
         data.forEach((obj) => {
             if (obj.isFile()) {
                 // console.log(obj)
                 if (obj.name.split('.')[1] != 'nomedia') {
                     if (obj.name.split('.')[1] == 'jpg') {
                         images.push({
-                            id: id++,
+                            id: imgId++,
                             name: obj.name,
                             path: obj.path,
                             time: obj.mtime,
@@ -47,7 +48,7 @@ const fetchDataFromDirectory = async () => {
                         });
                     } else if (obj.name.split('.')[1] == 'mp4') {
                         videos.push({
-                            id: id++,
+                            id: vidId++,
                             name: obj.name,
                             path: obj.path,
                             time: obj.mtime,

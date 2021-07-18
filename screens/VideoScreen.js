@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, AppState, FlatList, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import fetchDataFromDirectory from '../data/fetchDataFromWhatsApp';
 import PlayerVideo from '../components/VideoPlayer';
 import Image from '../components/Image';
@@ -12,7 +12,6 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 class VideoScreen extends React.Component {
     state = {
         videosData: [], //[{id, name, path, time},...]
-        appState: '',
         viewableIndex: 0, //-1 in order to stop all videos from play
         viewableIndexWas: -1, //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
         focused: true
