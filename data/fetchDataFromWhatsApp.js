@@ -10,24 +10,19 @@ const fetchDataFromDirectory = async () => {
     
     try {
         // console.log(RNFS.ExternalStorageDirectoryPath)
-        let dir = '/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses';
+        let dir = '/storage/emulated/0/WhatsApp/Media/.Statuses';
         const value = await AsyncStorage.getItem('@whichwhatsapp');
         if (value !== null) {
-            if (value == 'whatsapp'){
-                dir = '/storage/emulated/0/WhatsApp/Media/.Statuses';
+            if (value == 'Bwhatsapp'){
+                dir = '/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses';
             }
             else if (value == 'Ywhatsapp'){
                 dir = '/storage/emulated/0/YoWhatsApp/Media/.Statuses';
             }
-            // else if (value == 'Bwhatsapp'){
-
-            // }
+       
         }
-        // if (Wtype == 'whatsapp'){
-        //     dir
-        // }
+      
         const data = await RNFS.readDir(
-            // '/storage/emulated/0/WhatsApp/Media/.Statuses',
             dir
         );
         const images = [];

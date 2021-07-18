@@ -21,10 +21,11 @@ const storeData = async (value) => {
 
 const App = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isWhatsApp, setIsWhatsApp] = useState(false);
-  const [isBusinessWhatsApp, setIsBusinessWhatsApp] = useState(true);
+
+  const [isWhatsApp, setIsWhatsApp] = useState(true);
+  const [isBusinessWhatsApp, setIsBusinessWhatsApp] = useState(false);
   const [isYoWhatsApp, setIsYoWhatsApp] = useState(false);
-  const [whichWhatsApp, setWhichWhatsApp] = useState('Bwhatsapp'); //whatsapp, Bwhatsapp, Ywhatsapp
+  const [whichWhatsApp, setWhichWhatsApp] = useState('whatsapp'); //whatsapp, Bwhatsapp, Ywhatsapp
   const [whichWhatsAppInitialValue, setWhichWhatsAppInitialValue] = useState('');
 
   const dispatch = useDispatch();
@@ -40,9 +41,9 @@ const App = () => {
     try {
       const value = await AsyncStorage.getItem('@whichwhatsapp')
       if (value !== null) {
-        if (value == 'whatsapp') {
-          setIsWhatsApp(true);
-          setIsBusinessWhatsApp(false);
+        if (value == 'Bwhatsapp') {
+          setIsWhatsApp(false);
+          setIsBusinessWhatsApp(true);
           setIsYoWhatsApp(false);
           setWhichWhatsApp(value)
           setWhichWhatsAppInitialValue(value);
