@@ -1,34 +1,15 @@
 import React from 'react';
 import {Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import CameraRoll from "@react-native-community/cameraroll";
-import Share from 'react-native-share';
-import button from '../sounds/playSoundFunc';
-
-// const { width, height } = Dimensions.get('window');
+import download from '../helperFunctions/download';
+import share from '../helperFunctions/share';
 
 const ImageComponent = props => {
 
     return (
         <View style={{ marginVertical: 1 }}>
             <Image source={{ uri: 'file:///' + props.source }} style={{ height: 400, width: '100%' }} resizeMode={'contain'} />
-            <TouchableOpacity style={{ position: 'absolute', bottom: 110, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
-                // await Share.share({ url: 'file//'+props.source })
-                button.play((success) => {
-                    if (success) {
-                        button.stop();
-                    }
-                });
-                Share.open({
-                    url: 'file:///' + props.source
-                })
-                    .then((res) => {
-                        console.log(res);
-                    })
-                    .catch((err) => {
-                        err && console.log(err);
-                    });
-            }}>
+            <TouchableOpacity style={{ position: 'absolute', bottom: 110, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={share.bind(null, props.source)}>
                 <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
                     <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
                     <View style={{ width: '39%' }}>
@@ -37,14 +18,7 @@ const ImageComponent = props => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ position: 'absolute', bottom: 35, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={() => {
-                button.play((success) => {
-                    if (success) {
-                        button.stop();
-                    }
-                });
-                CameraRoll.save(props.source, { type: 'auto' })
-            }}>
+            <TouchableOpacity style={{ position: 'absolute', bottom: 35, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={download.bind(null, props.source)}>
                 <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
                     <Icon name={'ios-download-outline'} size={40} color={'white'} />
                     <View style={{ width: '66%' }}>
