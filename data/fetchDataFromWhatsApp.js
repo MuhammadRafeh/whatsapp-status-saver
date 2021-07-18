@@ -72,7 +72,7 @@ const fetchDataFromDirectory = async () => {
             return date2 - date1;
         });
 
-        console.log(vidLatest, imgLatest)
+        // console.log(vidLatest, imgLatest)
         // console.log(imgLatest)
         return { videos: [...vidLatest], images: [...imgLatest] }
     } catch (err) {

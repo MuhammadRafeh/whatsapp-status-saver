@@ -14,7 +14,8 @@ class VideoScreen extends React.Component {
         videosData: [], //[{id, name, path, time},...]
         appState: '',
         viewableIndex: 0, //-1 in order to stop all videos from play
-        viewableIndexWas: -1 //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
+        viewableIndexWas: -1, //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
+        focused: true
     }
 
     // setViewableIndex = (index) => { 
@@ -28,7 +29,9 @@ class VideoScreen extends React.Component {
     // }
 
     static getDerivedStateFromProps(props, currentState) {
-        
+        console.log('asdasdasd')
+        if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
+
         if (props.videosData.length >= 0) {
             return {
                 videosData: [...props.videosData]
@@ -41,14 +44,13 @@ class VideoScreen extends React.Component {
         console.log(this.props.navigation.isFocused())
         if (this.state.videosData.length > this.dataLength) { //We are seeing if we need to scroll to top or not
             this.dataLength = this.state.videosData.length;
-            // try {
-            //     this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
-            // } catch (err) {
-
-            // }
+       
             if (this.props.navigation.isFocused()) {
-                this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+                // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+                // console.log(2323232323)
+                this.list.scrollToOffset({ animated: true, offset: 0 });
             } else {
+                this.setState({variableIndex: -1})
                 this.isTheirAnyNeedToScrollToTop = true;
             }
         }
@@ -58,15 +60,18 @@ class VideoScreen extends React.Component {
     componentDidMount() {
         this.isTheirAnyNeedToScrollToTop = false;
         this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-            this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex })
+            this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
         })
         this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
             if (this.isTheirAnyNeedToScrollToTop) {
                 this.isTheirAnyNeedToScrollToTop = false;
-                this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+                // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+                this.list.scrollToOffset({ animated: true, offset: 0 });
+                this.setState({focused: true})
+            } else {
+                //when we focus from this we are running the video
+                this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
             }
-            //when we focus from this we are running the video
-            this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1 })
             // console.log('asdasdasdasdas')
         })
         this.videoHeight = height;
@@ -82,6 +87,7 @@ class VideoScreen extends React.Component {
     onViewableItemsChanged = ({ viewableItems, changed }) => {
         // console.log("Visible items are", viewableItems);
         // console.log("Changed in this iteration", changed);
+        // console.log('onViewableitems changed')
         try {
             this.setState({ viewableIndex: viewableItems[0]['index'] })
         } catch (err) {
@@ -90,7 +96,7 @@ class VideoScreen extends React.Component {
     }
 
     render() {
-        console.log('==========================', this.props.videoData)
+        // console.log('==========================', this.props.videoData)
         return <AnimatedFlatList
             onLayout={(e) => {
                 const { height } = e.nativeEvent.layout;
@@ -152,7 +158,7 @@ class VideoScreen extends React.Component {
                     height={this.videoHeight}
                     index={index}
                     // setViewableIndex={this.setViewableIndex}
-                    isViewable={this.state.viewableIndex == index ? true : false} />
+                    isViewable={this.state.viewableIndex  == index && this.state.focused ? true : false} />
             }}
             ListEmptyComponent={() => {
                 return <View style={{ backgroundColor: '#111212', justifyContent: 'center', alignItems: 'center', height: height - 40 }}>

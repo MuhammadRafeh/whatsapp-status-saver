@@ -87,7 +87,7 @@ class PlayerVideo extends React.Component {
     }
 
     render() {
-        // console.log('========>>>>>>>>>>.', this.props.isViewable, this.props.index)
+        console.log('========>>>>>>>>>>.index',  this.props.index)
         const { width, height } = Dimensions.get('window');
         // const height = width * .5625;
         return (
