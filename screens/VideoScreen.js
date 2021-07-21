@@ -167,21 +167,21 @@ class VideoScreen extends React.Component {
                     return <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         {
                             this.props.videosData.length == 0 && (
-                                <>
+                                <View style={{alignItems: 'center'}}>
                                     <View style={{marginBottom: 40}}>
                                         <EmptyFolder width={200} height={height / 4.5} />
                                     </View>
                                     {/* <Tick width={320} height={200} /> */}
-                                    <View>
-                                        <Text style={{ color: 'grey' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
+                                    <View style={{width: '80%'}}>
+                                        <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
                                     </View>
                                     <View>
-                                        <Text style={{ color: 'grey', fontStyle: 'italic' }}>OR</Text>
+                                        <Text style={{ color: 'grey', fontStyle: 'italic', borderColor: 'grey', borderBottomWidth: 1 }}>OR</Text>
                                     </View>
-                                    <View>
-                                        <Text style={{ color: 'grey' }}>May be you have currently no status on your WhatsApp.</Text>
+                                    <View style={{width: '80%'}}>
+                                        <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>May be you have currently no status on your WhatsApp.</Text>
                                     </View>
-                                </>
+                                </View>
                             )
                         }
                     </View>
