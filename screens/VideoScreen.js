@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import fetchDataFromDirectory from '../data/fetchDataFromWhatsApp';
 import PlayerVideo from '../components/VideoPlayer';
-import Image from '../components/Image';
 import { connect } from 'react-redux';
+import EmptyFolder from '../assets/search.svg';
+// import Tick from '../assets/tick.svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -148,7 +149,7 @@ class VideoScreen extends React.Component {
                 // extraData={this.state.viewableIndex}
                 onViewableItemsChanged={this.onViewableItemsChanged}
                 // scr
-                contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+                contentContainerStyle={styles.flatlistStyle}
                 data={this.state.videosData}
                 keyExtractor={item => item.id}
                 ref={ref => this.list = ref}
@@ -167,9 +168,19 @@ class VideoScreen extends React.Component {
                         {
                             this.props.videosData.length == 0 && (
                                 <>
-                                    <Text style={{ color: 'grey' }}>Select Your WhatsApp From Settings.</Text>
-                                    <Text style={{ color: 'grey' }}>OR</Text>
-                                    <Text style={{ color: 'grey' }}>May be you have currently no status on your WhatsApp.</Text>
+                                    <View style={{marginBottom: 40}}>
+                                        <EmptyFolder width={200} height={height / 4.5} />
+                                    </View>
+                                    {/* <Tick width={320} height={200} /> */}
+                                    <View>
+                                        <Text style={{ color: 'grey' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ color: 'grey', fontStyle: 'italic' }}>OR</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ color: 'grey' }}>May be you have currently no status on your WhatsApp.</Text>
+                                    </View>
                                 </>
                             )
                         }
@@ -192,5 +203,9 @@ const styles = StyleSheet.create({
     screen: {
         backgroundColor: '#111212',
         flex: 1
+    },
+    flatlistStyle: { 
+        flexGrow: 1, 
+        justifyContent: 'center' 
     }
 })

@@ -66,11 +66,11 @@ const App = () => {
         button.stop();
       }
     });
-
+    console.log(isSubmit)
     if (isSubmit && whichWhatsApp != whichWhatsAppInitialValue) {
       storeData(whichWhatsApp);
       dispatch(setMedia(true));
-
+      console.log(2323)
     }
 
     setModalVisible(!isModalVisible);
@@ -105,7 +105,7 @@ const App = () => {
 
   return (
     <>
-      <Modal isVisible={isModalVisible}>
+      <Modal isVisible={isModalVisible} useNativeDriver={true} onBackButtonPress={toggleModal.bind(null, false)}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: '80%', marginBottom: 10, fontWeight: 'bold' }}>
             <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold', fontSize: 17 }}>What You Are Using!</Text>
@@ -166,11 +166,16 @@ const App = () => {
         <View style={styles.labelContainer}>
           <Text style={styles.label}>WhatsApp Status Saver</Text>
         </View>
-        <View style={styles.settingContainer}>
+        <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }}>
-            <Icon name={'settings'} size={20} color={'white'} />
+          }} style={{paddingHorizontal: 10}}>
+            <Icon name={'settings'} size={22} color={'white'} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            toggleModal();
+          }} style={{paddingLeft: 10, paddingRight: 15}}>
+            <Icon name={'ios-information-circle'} size={25} color={'white'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -207,9 +212,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 19
   },
-  settingContainer: {
-    marginRight: 15,
-    marginTop: 15
+  buttonsContainer: {
+    // marginRight: 15,
+    marginTop: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   flex1: {
     flex: 1
