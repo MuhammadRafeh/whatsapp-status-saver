@@ -4,6 +4,7 @@ import fetchDataFromDirectory from '../data/fetchDataFromWhatsApp';
 import PlayerVideo from '../components/VideoPlayer';
 import Image from '../components/Image';
 import { connect } from 'react-redux';
+import EmptyFolder from '../assets/search.svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -54,36 +55,48 @@ class ImageScreen extends React.Component {
     }
 
     render() {
-        return <FlatList
-            decelerationRate={'fast'}
-            scrollEventThrottle={16}
-            viewabilityConfig={{
-                viewAreaCoveragePercentThreshold: 60
-            }}
-            onViewableItemsChanged={this.onViewableItemsChanged}
-            contentContainerStyle={styles.screen}
-            data={this.state.imagesData}
-            keyExtractor={item => item.id}
-            ref={ref => this.list = ref}
-            renderItem={({ item, index }) => {
-                return <Image
-                    source={item.path}
-                />
-            }}
-            ListEmptyComponent={() => {
-                return <View style={{ backgroundColor: '#111212', justifyContent: 'center', alignItems: 'center', height: height - 40 }}>
-                    {
-                        this.state.imagesData.length == 0 && (
-                            <>
-                                <Text style={{ color: 'grey' }}>Which WhatsApp You are using? Set from settings.</Text>
-                                <Text style={{ color: 'grey' }}>OR</Text>
-                                <Text style={{ color: 'grey' }}>May be you have currently no status on your WhatsApp.</Text>
-                            </>
-                        )
-                    }
-                </View>
-            }}
-        />
+        return <View
+            style={styles.screen}
+        >
+            <FlatList
+                decelerationRate={'fast'}
+                scrollEventThrottle={16}
+                viewabilityConfig={{
+                    viewAreaCoveragePercentThreshold: 60
+                }}
+                onViewableItemsChanged={this.onViewableItemsChanged}
+                contentContainerStyle={styles.flatlistStyle}
+                data={this.state.imagesData}
+                keyExtractor={item => item.id}
+                ref={ref => this.list = ref}
+                renderItem={({ item, index }) => {
+                    return <Image
+                        source={item.path}
+                    />
+                }}
+                ListEmptyComponent={() => {
+                    return <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        {
+                            <View style={{ alignItems: 'center' }}>
+                                <View style={{ marginBottom: 40 }}>
+                                    <EmptyFolder width={200} height={height / 4.5} />
+                                </View>
+                                {/* <Tick width={320} height={200} /> */}
+                                <View style={{ width: '80%' }}>
+                                    <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
+                                </View>
+                                <View style={{ marginBottom: 1 }}>
+                                    <Text style={{ color: 'grey', fontStyle: 'italic', borderColor: 'grey', borderBottomWidth: 1 }}>OR</Text>
+                                </View>
+                                <View style={{ width: '80%' }}>
+                                    <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>May be you have currently no status on your WhatsApp.</Text>
+                                </View>
+                            </View>
+                        }
+                    </View>
+                }}
+            />
+        </View>
     }
 }
 
@@ -99,7 +112,10 @@ export default connect(mapStateToProps, null)(ImageScreen);
 const styles = StyleSheet.create({
     screen: {
         backgroundColor: '#111212',
-        // flex: 1
+        flex: 1
+    },
+    flatlistStyle: {
+        flexGrow: 1,
+        justifyContent: 'center'
     }
 })
-

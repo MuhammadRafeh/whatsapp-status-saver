@@ -215,8 +215,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'white',
-    fontWeight: 'bold',
-    fontSize: 19
+    // fontWeight: 'bold',
+    fontSize: 19,
+    fontFamily: 'FontAwesome5_Solid'
   },
   buttonsContainer: {
     // marginRight: 15,
