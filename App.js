@@ -164,18 +164,22 @@ const App = () => {
         style={styles.header}
       >
         <View style={styles.labelContainer}>
-          <Text style={styles.label}>WhatsApp Status Saver</Text>
+          <Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>WhatsApp Status Saver</Text>
         </View>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }} style={{paddingHorizontal: 10}}>
-            <Icon name={'settings'} size={22} color={'white'} />
+          }} style={{ paddingHorizontal: 10, paddingTop: 15, paddingLeft: 10}}>
+            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
+              <Icon name={'settings'} size={23} color={'white'} />
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }} style={{paddingLeft: 10, paddingRight: 15}}>
-            <Icon name={'ios-information-circle'} size={25} color={'white'} />
+          }} style={{ paddingLeft: 10, paddingRight: 15, paddingTop: 15}}>
+            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
+              <Icon name={'ios-information-circle'} size={25} color={'white'} />
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -204,8 +208,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black'
   },
   labelContainer: {
+    // backgroundColor: 'green',
     marginTop: 15,
-    marginLeft: 15
+    paddingLeft: 15,
+    width: '50%'
   },
   label: {
     color: 'white',
@@ -214,10 +220,11 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     // marginRight: 15,
-    marginTop: 15,
+    // backgroundColor: 'green',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '50%',
   },
   flex1: {
     flex: 1

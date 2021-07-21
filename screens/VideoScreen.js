@@ -175,7 +175,7 @@ class VideoScreen extends React.Component {
                                     <View style={{width: '80%'}}>
                                         <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
                                     </View>
-                                    <View>
+                                    <View style={{marginBottom: 1}}>
                                         <Text style={{ color: 'grey', fontStyle: 'italic', borderColor: 'grey', borderBottomWidth: 1 }}>OR</Text>
                                     </View>
                                     <View style={{width: '80%'}}>
