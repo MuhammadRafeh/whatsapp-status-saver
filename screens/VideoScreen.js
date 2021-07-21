@@ -50,7 +50,7 @@ class VideoScreen extends React.Component {
                 // console.log(2323232323)
                 this.list.scrollToOffset({ animated: true, offset: 0 });
             } else {
-                this.setState({ variableIndex: -1 })
+                // this.setState({ variableIndex: -1 })
                 this.isTheirAnyNeedToScrollToTop = true;
             }
         }
