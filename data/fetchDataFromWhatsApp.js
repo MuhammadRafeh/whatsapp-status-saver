@@ -71,6 +71,9 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
         }
     }
     await AsyncStorage.setItem('@directory', saveDirectory)
+    if (datas.length == 0){
+        return { videos: [], images: [] }
+    }
     return await fetchDataFromDirectory(datas);
 
 }
