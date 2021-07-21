@@ -16,7 +16,7 @@ class ImageScreen extends React.Component {
     static getDerivedStateFromProps(props, currentState) {
         if (JSON.stringify(props.imagesData) === JSON.stringify(currentState.imagesData)) return null;
 
-        if (props.imagesData.length >= 0) {
+        if (props.imagesData) {
             return {
                 imagesData: [...props.imagesData]
             }

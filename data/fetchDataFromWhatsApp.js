@@ -103,6 +103,7 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
     } else {
         data = [...isComingFromSetupDirectory];
     }
+    if (data.length == 0) return { videos: [], images: [] }
 
     const images = [];
     const videos = [];

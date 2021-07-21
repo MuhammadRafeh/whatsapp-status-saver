@@ -9,7 +9,6 @@ const initialMediaState = {
 const mediaReducer = (state = initialMediaState, action) => {
     switch (action.type) {
         case SETMEDIA:
-            // console.log('hi')
             return action.payload;
         default:
             return state;
