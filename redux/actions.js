@@ -1,10 +1,18 @@
-import fetchDataFromDirectory from "../data/fetchDataFromWhatsApp";
+import fetchDataFromDirectory, { directorySetup } from "../data/fetchDataFromWhatsApp";
 
 export const SETMEDIA = 'SETMEDIA';
 
-export const setMedia = () => {
+export const setMedia = (isSetupDirectory  = false) => {
     return async (dispatch) => {
-        const data = await fetchDataFromDirectory();
+        let data = {};
+        if (isSetupDirectory){
+
+            const mediaData = await directorySetup();
+            data = {...mediaData};
+        } else{
+            const mediaData = await fetchDataFromDirectory();
+            data = {...mediaData};
+        }
         dispatch({
             type: SETMEDIA,
             payload: data

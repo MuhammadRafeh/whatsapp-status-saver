@@ -69,7 +69,7 @@ const App = () => {
 
     if (isSubmit && whichWhatsApp != whichWhatsAppInitialValue) {
       storeData(whichWhatsApp);
-      dispatch(setMedia());
+      dispatch(setMedia(true));
 
     }
 
@@ -78,7 +78,7 @@ const App = () => {
 
   useEffect(() => {
     getData();
-    dispatch(setMedia());
+    dispatch(setMedia(true));
     AppState.addEventListener('change', handleAppStateChange);
 
     return () => AppState.removeEventListener('change', handleAppStateChange)
