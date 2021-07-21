@@ -8,7 +8,16 @@ const Tab = createMaterialTopTabNavigator();
 function MyTabs() {
     return (
         <>
-            <Tab.Navigator tabBarOptions={{style: {backgroundColor: 'black'}, activeTintColor: 'white'}}>
+            <Tab.Navigator
+                tabBarOptions={{
+                    style: { backgroundColor: 'black' },
+                    // tabStyle: {
+                    //     flexDirection: 'row-reverse',
+                    //     alignItems: 'center', justifyContent: 'center'
+                    // },
+                    // showIcon: true,
+                    activeTintColor: 'white'
+                }}>
                 <Tab.Screen name="Videos" component={VideoScreen} />
                 <Tab.Screen name="Images" component={ImageScreen} />
             </Tab.Navigator>

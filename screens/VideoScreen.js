@@ -5,6 +5,7 @@ import PlayerVideo from '../components/VideoPlayer';
 import { connect } from 'react-redux';
 import EmptyFolder from '../assets/search.svg';
 // import Tick from '../assets/tick.svg';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,6 +51,7 @@ class VideoScreen extends React.Component {
                 // console.log(2323232323)
                 this.list.scrollToOffset({ animated: true, offset: 0 });
             } else {
+
                 // this.setState({ variableIndex: -1 })
                 this.isTheirAnyNeedToScrollToTop = true;
             }
@@ -58,6 +60,15 @@ class VideoScreen extends React.Component {
 
 
     componentDidMount() {
+        // console.log('==========================', this.props.navigation.setOptions({
+        //     showIcon: true,
+        //     // showIcon: false
+        //     tabBarIcon: ({ focused, color }) => (
+        //         <Text style={{ marginTop: 6 }}>
+        //             <Icon name={'md-add-circle'} color={color} />
+        //         </Text>
+        //     ),
+        // }))
         this.isTheirAnyNeedToScrollToTop = false;
         this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
             this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
@@ -96,7 +107,7 @@ class VideoScreen extends React.Component {
     }
 
     render() {
-        // console.log('==========================', this.props.videoData)
+        // console.log('==========================', this.props.navigation.setOptions({tabBarIcon: ({focused, color}) => {}}))
         return <View
             onLayout={(e) => {
                 const { height } = e.nativeEvent.layout;
