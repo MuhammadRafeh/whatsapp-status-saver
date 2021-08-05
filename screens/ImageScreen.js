@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, ScrollView } from 'react-native';
 import Image from '../components/Image';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
@@ -14,7 +14,7 @@ class ImageScreen extends React.Component {
     tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
-            this.list.scrollToOffset({ animated: true, offset: 0 });
+            this.list.scrollTo({ x: 0, y: 0, animated: true })
         }
     })
     dataLength = 0;
@@ -32,23 +32,12 @@ class ImageScreen extends React.Component {
             this.dataLength = this.state.imagesData.length;
 
             if (this.props.navigation.isFocused()) {
-                this.list.scrollToOffset({ animated: true, offset: 0 });
+                this.list.scrollTo({ x: 0, y: 0, animated: true })
             } else {
                 this.isTheirAnyNeedToScrollToTop = true;
             }
         }
     }
-
-    // componentDidMount() {
-    // this.isTheirAnyNeedToScrollToTop = false;
-    // this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
-    //     if (this.isTheirAnyNeedToScrollToTop) {
-    //         this.isTheirAnyNeedToScrollToTop = false;
-    //         this.list.scrollToOffset({ animated: true, offset: 0 });
-    //     }
-    // })
-    // this.dataLength = 0;
-    // }
 
     componentWillUnmount() {
         this.tabPressListenerFocus();
@@ -58,24 +47,11 @@ class ImageScreen extends React.Component {
         return <View
             style={styles.screen}
         >
-            <FlatList
-                decelerationRate={'fast'}
-                scrollEventThrottle={16}
-                viewabilityConfig={{
-                    viewAreaCoveragePercentThreshold: 60
-                }}
-                onViewableItemsChanged={this.onViewableItemsChanged}
-                contentContainerStyle={styles.flatlistStyle}
-                data={this.state.imagesData}
-                keyExtractor={item => item.id}
-                ref={ref => this.list = ref}
-                renderItem={({ item, index }) => {
-                    return <Image
-                        source={item.path}
-                    />
-                }}
-                ListEmptyComponent={<EmptyScreenInfo />}
-            />
+            <ScrollView ref={ref => this.list = ref}>
+                {
+                    this.state.imagesData.map(img => <Image source={img.path} />)
+                }
+            </ScrollView>
         </View>
     }
 }

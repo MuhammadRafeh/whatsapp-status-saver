@@ -36,11 +36,9 @@ class VideoScreen extends React.Component {
 
     static getDerivedStateFromProps(props, currentState) {
         if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
-
         return {
             videosData: [...props.videosData]
         }
-
     }
 
     componentDidUpdate(prevProps, prevState) {
