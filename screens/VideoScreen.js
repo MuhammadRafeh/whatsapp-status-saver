@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { connect } from 'react-redux';
-import EmptyFolder from '../assets/search.svg';
+import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
 const { height } = Dimensions.get('window');
 
@@ -16,15 +16,31 @@ class VideoScreen extends React.Component {
         focused: true
     }
 
+    isTheirAnyNeedToScrollToTop = false;
+    tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
+        this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
+    })
+    tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
+        if (this.isTheirAnyNeedToScrollToTop) {
+            this.isTheirAnyNeedToScrollToTop = false;
+            // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+            this.list.scrollToOffset({ animated: true, offset: 0 });
+            this.setState({ focused: true })
+        } else {
+            //when we focus from this we are running the video
+            this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
+        }
+    })
+    videoHeight = height;
+    dataLength = 0;
+
     static getDerivedStateFromProps(props, currentState) {
         if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
 
-        if (props.videosData) {
-            return {
-                videosData: [...props.videosData]
-            }
+        return {
+            videosData: [...props.videosData]
         }
-        return null;
+
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -40,7 +56,7 @@ class VideoScreen extends React.Component {
     }
 
 
-    componentDidMount() {
+    // componentDidMount() {
         //     showIcon: true,
         //     // showIcon: false
         //     tabBarIcon: ({ focused, color }) => (
@@ -49,24 +65,24 @@ class VideoScreen extends React.Component {
         //         </Text>
         //     ),
         // }))
-        this.isTheirAnyNeedToScrollToTop = false;
-        this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-            this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
-        })
-        this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
-            if (this.isTheirAnyNeedToScrollToTop) {
-                this.isTheirAnyNeedToScrollToTop = false;
-                // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
-                this.list.scrollToOffset({ animated: true, offset: 0 });
-                this.setState({ focused: true })
-            } else {
-                //when we focus from this we are running the video
-                this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
-            }
-        })
-        this.videoHeight = height;
-        this.dataLength = 0;
-    }
+        // this.isTheirAnyNeedToScrollToTop = false;
+        // this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
+        //     this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
+        // })
+        // this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
+        //     if (this.isTheirAnyNeedToScrollToTop) {
+        //         this.isTheirAnyNeedToScrollToTop = false;
+        //         // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
+        //         this.list.scrollToOffset({ animated: true, offset: 0 });
+        //         this.setState({ focused: true })
+        //     } else {
+        //         //when we focus from this we are running the video
+        //         this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
+        //     }
+        // })
+        // this.videoHeight = height;
+        // this.dataLength = 0;
+    // }
 
     componentWillUnmount() {
         this.tabPressListenerBlur();
@@ -104,27 +120,11 @@ class VideoScreen extends React.Component {
                     return <PlayerVideo
                         source={item.path}
                         refList={this.list}
-                        height={this.videoHeight ? this.videoHeight: height - 35}
+                        height={this.videoHeight ? this.videoHeight : height - 35}
                         index={index}
                         isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
                 }}
-                ListEmptyComponent={() => (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ alignItems: 'center' }}>
-                        <View style={{ marginBottom: 40 }}>
-                            <EmptyFolder width={200} height={height / 4.5} />
-                        </View>
-                        <View style={{ width: '80%' }}>
-                            <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>I Hope You Have Selected Your WhatsApp From Settings.</Text>
-                        </View>
-                        <View style={{ marginBottom: 1 }}>
-                            <Text style={{ color: 'grey', fontStyle: 'italic', borderColor: 'grey', borderBottomWidth: 1 }}>OR</Text>
-                        </View>
-                        <View style={{ width: '80%' }}>
-                            <Text style={{ color: 'grey', fontFamily: 'verdana' }} numberOfLines={1} adjustsFontSizeToFit={true}>May be you have currently no status on your WhatsApp.</Text>
-                        </View>
-                    </View>
-                </View>
-                )}
+                ListEmptyComponent={<EmptyScreenInfo/>}
             />
         </View>
     }
