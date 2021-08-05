@@ -26,8 +26,7 @@ class ImageScreen extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-
+    componentDidUpdate() {
         if (this.state.imagesData.length > this.dataLength) { //We are seeing if we need to scroll to top or not
             this.dataLength = this.state.imagesData.length;
 
