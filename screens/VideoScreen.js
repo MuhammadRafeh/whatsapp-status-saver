@@ -23,7 +23,6 @@ class VideoScreen extends React.Component {
     tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
-            // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
             this.list.scrollToOffset({ animated: true, offset: 0 });
             this.setState({ focused: true })
         } else {
@@ -53,35 +52,6 @@ class VideoScreen extends React.Component {
         }
     }
 
-
-    // componentDidMount() {
-        //     showIcon: true,
-        //     // showIcon: false
-        //     tabBarIcon: ({ focused, color }) => (
-        //         <Text style={{ marginTop: 6 }}>
-        //             <Icon name={'md-add-circle'} color={color} />
-        //         </Text>
-        //     ),
-        // }))
-        // this.isTheirAnyNeedToScrollToTop = false;
-        // this.tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-        //     this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
-        // })
-        // this.tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
-        //     if (this.isTheirAnyNeedToScrollToTop) {
-        //         this.isTheirAnyNeedToScrollToTop = false;
-        //         // this.list.scrollToIndex({ animated: true, index: 0, viewPosition: 0 })
-        //         this.list.scrollToOffset({ animated: true, offset: 0 });
-        //         this.setState({ focused: true })
-        //     } else {
-        //         //when we focus from this we are running the video
-        //         this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
-        //     }
-        // })
-        // this.videoHeight = height;
-        // this.dataLength = 0;
-    // }
-
     componentWillUnmount() {
         this.tabPressListenerBlur();
         this.tabPressListenerFocus();
@@ -91,7 +61,6 @@ class VideoScreen extends React.Component {
         try {
             this.setState({ viewableIndex: viewableItems[0]['index'] })
         } catch (err) {
-
         }
     }
 

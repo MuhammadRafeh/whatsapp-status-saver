@@ -79,7 +79,6 @@ class PlayerVideo extends React.Component {
 
     render() {
         const { width, height } = Dimensions.get('window');
-        // const height = width * .5625;
         return (
             <View style={{ flex: 1 }}>
                 <View>

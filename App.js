@@ -15,7 +15,6 @@ const storeData = async (value) => {
   try {
     await AsyncStorage.setItem('@whichwhatsapp', value)
   } catch (e) {
-    // saving error
   }
 }
 
@@ -56,7 +55,6 @@ const App = () => {
         }
       }
     } catch (e) {
-      // error reading value
     }
   }
 
@@ -208,20 +206,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'black'
   },
   labelContainer: {
-    // backgroundColor: 'green',
     marginTop: 15,
     paddingLeft: 15,
     width: '50%'
   },
   label: {
     color: 'white',
-    // fontWeight: 'bold',
     fontSize: 19,
     fontFamily: 'FontAwesome5_Solid'
   },
   buttonsContainer: {
-    // marginRight: 15,
-    // backgroundColor: 'green',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',

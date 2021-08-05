@@ -7,7 +7,6 @@ import EmptyScreenInfo from '../components/EmptyScreenInfo';
 class ImageScreen extends React.Component {
     state = {
         imagesData: [], //[{id, name, path, time},...]
-        viewableIndex: 0
     }
 
     isTheirAnyNeedToScrollToTop = false;
