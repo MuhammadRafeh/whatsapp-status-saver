@@ -91,7 +91,7 @@ class VideoScreen extends React.Component {
                         index={index}
                         isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
                 }}
-                ListEmptyComponent={<EmptyScreenInfo/>}
+                ListEmptyComponent={<EmptyScreenInfo />}
             />
         </View>
     }

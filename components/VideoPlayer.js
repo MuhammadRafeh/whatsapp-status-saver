@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
 import Video from 'react-native-video'
 import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Ionicons';
-import share from '../helperFunctions/share';
-import download from '../helperFunctions/download';
+import Buttons from './Buttons';
 
 function secondsToTime(time) {
     return ~~(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60;
@@ -116,24 +115,7 @@ class PlayerVideo extends React.Component {
                         {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
                     </Text>
                 </View>
-                
-                <TouchableOpacity style={{ position: 'absolute', bottom: 140, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={share.bind(null, this.props.source)}>
-                    <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
-                        <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
-                        <View style={{ width: '39%' }}>
-                            <Text style={{ color: 'white', letterSpacing: 0.1, textAlign: 'center' }} adjustsFontSizeToFit={true} numberOfLines={1}>Share</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{ position: 'absolute', bottom: 70, right: 10, alignItems: 'center', justifyContent: 'center' }} onPress={download.bind(null, this.props.source)}>
-                    <View style={{ alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'rgba(0, 0, 0, .5)', borderRadius: 30, width: 60, height: 60 }}>
-                        <Icon name={'ios-download-outline'} size={40} color={'white'} />
-                        <View style={{ width: '66%' }}>
-                            <Text style={{ color: 'white', letterSpacing: 0.1, textAlign: 'center' }} adjustsFontSizeToFit={true} numberOfLines={1}>Download</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
+                <Buttons source={this.props.source} share={140} downL={70}/>
             </View>
         )
     }

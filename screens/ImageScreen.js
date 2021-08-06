@@ -45,11 +45,19 @@ class ImageScreen extends React.Component {
         return <View
             style={styles.screen}
         >
-            <ScrollView ref={ref => this.list = ref}>
-                {
-                    this.state.imagesData.map(img => <Image source={img.path} />)
-                }
-            </ScrollView>
+            {
+                this.state.imagesData.length != 0 ? (
+                    <ScrollView ref={ref => this.list = ref}>
+                        {
+                            this.state.imagesData.map(img => <Image source={img.path} />)
+                        }
+                    </ScrollView>
+                ) : (
+                    <View style={styles.emptyStyle}>
+                        <EmptyScreenInfo />
+                    </View>
+                )
+            }
         </View>
     }
 }
@@ -67,8 +75,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#111212',
         flex: 1
     },
-    flatlistStyle: {
-        flexGrow: 1,
+    emptyStyle: {
+        flex: 1,
         justifyContent: 'center'
     }
 })
