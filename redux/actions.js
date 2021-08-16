@@ -6,7 +6,6 @@ export const setMedia = (isSetupDirectory  = false) => {
     return async (dispatch) => {
         let data = {};
         if (isSetupDirectory){
-
             const mediaData = await directorySetup();
             data = {...mediaData};
         } else{

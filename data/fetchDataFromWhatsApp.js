@@ -4,16 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // await AsyncStorage.setItem('@directory', saveDirectory)
 
-// var OneDay = new Date().getTime() + (1 * 24 * 60 * 60 * 1000)
-// // day hour  min  sec  msec
-// if (OneDay > yourDate) {
-//     // The yourDate time is less than 1 days from now
-
-// }
-// else if (OneDay < yourDate) {
-//     // The yourDate time is more than 1 days from now
-// }
-
 // Call this if user opens app for first time and set choose other directory from options!
 export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
     const isGranted = await writeExternalStoragePermission();
@@ -53,21 +43,9 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
     for (const directory of directories) {//directory = string
         try {
             const data = await RNFS.readDir(directory);
-            // if (data.length >= 2) {
-            //     data.forEach(file => {
-            //         if (file.name.split('.')[1] != 'nomedia') {
-            //             const OneDay = new Date().getTime() + (1 * 24 * 60 * 60 * 1000)
-            //             if (OneDay > yourDate) {
-            //                 // The yourDate time is less than 1 days from now
-
-            //             }
-            //         }
-            //     })
-            // }
             datas = [...data]
             saveDirectory = directory;
         } catch (err) {
-            console.log(err);
         }
     }
     await AsyncStorage.setItem('@directory', saveDirectory)
@@ -95,10 +73,8 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
                 const dirData = await RNFS.readDir(dir);
                 data = [...dirData];
             }
-            // console.log(data)
 
         } catch (err) {
-            console.log(err.message, err.code);
         }
     } else {
         data = [...isComingFromSetupDirectory];
@@ -110,9 +86,7 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
     let imgId = 0;
     let vidId = 0;
     data.forEach((obj) => {
-        // console.log(new Date(obj.mtime))
         if (obj.isFile()) {
-            // console.log(obj)
             if (obj.name.split('.')[1] != 'nomedia') {
                 if (obj.name.split('.')[1] == 'jpg') {
                     images.push({
@@ -120,7 +94,6 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
                         name: obj.name,
                         path: obj.path,
                         time: obj.mtime,
-                        // size: obj.size,
                     });
                 } else if (obj.name.split('.')[1] == 'mp4') {
                     videos.push({
@@ -128,7 +101,6 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
                         name: obj.name,
                         path: obj.path,
                         time: obj.mtime,
-                        // size: obj.size,
                     });
                 }
             }
@@ -143,15 +115,12 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
     });
 
     const vidLatest = videos.sort((a, b) => {
-        // console.log(Date(a.time))
         const date1 = new Date(a.time);
         const date2 = new Date(b.time);
 
         return date2 - date1;
     });
 
-    // console.log(vidLatest, imgLatest)
-    // console.log(imgLatest)
     return { videos: [...vidLatest], images: [...imgLatest] }
 };
 
