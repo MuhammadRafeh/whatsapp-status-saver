@@ -84,7 +84,7 @@ class PlayerVideo extends React.Component {
         return (
             // <View style={{position: 'relative', height: this.props.height }}>
 
-                <View style={{ flex: 1, top: this.props.index * this.props.height }}>
+                <View style={{ flex: 1 }}>
                     {console.log(this.props.height, 'asdasd')}
                     <View>
                         <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>

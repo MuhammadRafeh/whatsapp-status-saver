@@ -70,10 +70,8 @@ class VideoScreen extends React.Component {
     }
 
     moveToNext = (index) => {
+        this.setState({ viewableIndex: index + 1 })
         const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
-        // console.log(typeof nextItem, Number.parseInt(JSON.stringify(this.scrollY)))
-        
-
         this.list.scrollTo({ animated: true, y:  nextItem})
     }
 
@@ -100,8 +98,6 @@ class VideoScreen extends React.Component {
                     ],
                     { useNativeDriver: true }
                 )}
-                // onViewableItemsChanged={this.onViewableItemsChanged}
-                // contentContainerStyle={{height: this.state.videoHeight}}
                 scrollEnabled={false}
                 ref={ref => this.list = ref}
             >
