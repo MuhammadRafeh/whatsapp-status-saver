@@ -58,13 +58,7 @@ class PlayerVideo extends React.Component {
         })
         this.player.seek(0);
         console.log('end')
-        try {
-            this.props.moveToNext(this.props.index)
-            // this.props.refList.scrollTo({ animated: true, y: this.props.height + this.props.scrollY, x: 0 })
-            // this.props.refList.scrollTo({ animated: true, y: 500 })
-        } catch (err) {
-
-        }
+        this.props.moveToNext(this.props.index)
     }
 
     handleProgress = (progress) => {
@@ -84,45 +78,45 @@ class PlayerVideo extends React.Component {
         return (
             // <View style={{position: 'relative', height: this.props.height }}>
 
-                <View style={{ flex: 1 }}>
-                    {console.log(this.props.height, 'asdasd')}
-                    <View>
-                        <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
-                            <Video
-                                paused={this.state.paused}
-                                source={{ uri: this.props.source }}
-                                style={{ width: '100%', height: this.props.height }}
-                                resizeMode={'contain'}
-                                onLoad={this.handleLoad}
-                                onProgress={this.handleProgress}
-                                onEnd={this.handleEnd}
-                                ref={ref => this.player = ref}
-                            />
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View style={[styles.controls, {top: this.props.height - 48}]}>
-                        <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
-                            <Icon name={!this.state.paused ? 'pause' : 'play'} size={30} color={'#FFF'} />
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={this.handleProgressPress}>
-                            <View>
-                                <ProgressBar
-                                    progress={this.state.progress}
-                                    color="#FFF"
-                                    unfilledColor="rgba(255, 255, 255, .5)"
-                                    borderColor="#FFF"
-                                    width={250}
-                                    height={20}
-
-                                />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <Text style={styles.duration}>
-                            {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
-                        </Text>
-                    </View>
-                    <Buttons source={this.props.source} share={140} downL={70} />
+            <View style={{ flex: 1 }}>
+                {console.log(this.props.height, 'asdasd')}
+                <View>
+                    <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
+                        <Video
+                            paused={this.state.paused}
+                            source={{ uri: this.props.source }}
+                            style={{ width: '100%', height: this.props.height }}
+                            resizeMode={'contain'}
+                            onLoad={this.handleLoad}
+                            onProgress={this.handleProgress}
+                            onEnd={this.handleEnd}
+                            ref={ref => this.player = ref}
+                        />
+                    </TouchableWithoutFeedback>
                 </View>
+                <View style={[styles.controls, { top: this.props.height - 48 }]}>
+                    <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
+                        <Icon name={!this.state.paused ? 'pause' : 'play'} size={30} color={'#FFF'} />
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={this.handleProgressPress}>
+                        <View>
+                            <ProgressBar
+                                progress={this.state.progress}
+                                color="#FFF"
+                                unfilledColor="rgba(255, 255, 255, .5)"
+                                borderColor="#FFF"
+                                width={250}
+                                height={20}
+
+                            />
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <Text style={styles.duration}>
+                        {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
+                    </Text>
+                </View>
+                <Buttons source={this.props.source} share={140} downL={70} />
+            </View>
             // </View>
         )
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { connect } from 'react-redux';
-import EmptyScreenInfo from '../components/EmptyScreenInfo';
+// import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
 const { height } = Dimensions.get('window');
 
@@ -57,26 +57,24 @@ class VideoScreen extends React.Component {
         this.tabPressListenerFocus();
     }
 
-    onViewableItemsChanged = ({ viewableItems, changed }) => {
-        try {
-            this.setState({ viewableIndex: viewableItems[0]['index'] })
-        } catch (err) {
-        }
-    }
-
     moveToNext = (index) => {
         this.setState({ viewableIndex: index + 1 })
-        const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
-        this.list.scrollTo({ animated: true, y:  nextItem})
+        // const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
+        const nextItem = (index * this.state.videoHeight) + this.state.videoHeight
+        try {
+            this.list.scrollTo({ animated: true, y: nextItem })
+        } catch (err) {
+        }
         this.scrollY.setValue(nextItem)
     }
+
 
     render() {
 
         return <View
             onLayout={(e) => {
                 const { height } = e.nativeEvent.layout;
-                this.setState({videoHeight: height})
+                this.setState({ videoHeight: height })
             }}
             style={styles.screen}
         >
@@ -94,17 +92,16 @@ class VideoScreen extends React.Component {
                     ],
                     { useNativeDriver: true }
                 )}
-                scrollEnabled={false}
+                // scrollEnabled={false}
                 ref={ref => this.list = ref}
             >
                 {
                     this.state.videosData.map((data, index) => {
                         return (
                             <PlayerVideo
+                                key={index}
                                 moveToNext={this.moveToNext}
-                                key={data.id}
                                 source={data.path}
-                                refList={this.list}
                                 height={this.state.videoHeight ? this.state.videoHeight : height - 35}
                                 index={index}
                                 isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
