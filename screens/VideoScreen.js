@@ -100,6 +100,7 @@ class VideoScreen extends React.Component {
                     this.state.videosData.map((data, index) => {
                         return (
                             <PlayerVideo
+                            scrollY={this.scrollY}
                                 key={data.id}
                                 source={data.path}
                                 refList={this.list}
