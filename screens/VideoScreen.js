@@ -25,7 +25,7 @@ class VideoScreen extends React.Component {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
             this.list.scrollTo({ animated: true, x: 0, y: 0 });
-            this.setState({ focused: true })
+            this.setState({ focused: true, viewableIndex: 0 })
         } else {
             //when we focus from this we are running the video
             this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
@@ -97,6 +97,7 @@ class VideoScreen extends React.Component {
             >
                 {
                     this.state.videosData.map((data, index) => {
+                        console.log("id", data.id)
                         return (
                             <PlayerVideo
                                 key={index}

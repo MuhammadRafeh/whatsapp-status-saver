@@ -4,6 +4,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // await AsyncStorage.setItem('@directory', saveDirectory)
 
+export const sorting = (arr) => {
+    arr.sort(function (a, b) { //sorting Desc
+        if (new Date(a.time) > new Date(b.time)) {
+            return -1;
+        }
+        if (new Date(b.time) > new Date(a.time)) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+
 // Call this if user opens app for first time and set choose other directory from options!
 export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
     const isGranted = await writeExternalStoragePermission();
@@ -107,21 +120,10 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
         }
     });
 
-    const imgLatest = images.sort((a, b) => {
-        const date1 = new Date(a.time);
-        const date2 = new Date(b.time);
+    sorting(images)
+    sorting(videos)
 
-        return date2 - date1;
-    });
-
-    const vidLatest = videos.sort((a, b) => {
-        const date1 = new Date(a.time);
-        const date2 = new Date(b.time);
-
-        return date2 - date1;
-    });
-
-    return { videos: [...vidLatest], images: [...imgLatest] }
+    return { videos, images }
 };
 
 export default fetchDataFromDirectory;
