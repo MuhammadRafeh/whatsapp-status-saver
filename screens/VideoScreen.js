@@ -90,7 +90,7 @@ class VideoScreen extends React.Component {
                             }
                         }
                     ],
-                    { useNativeDriver: true } // <-- Add this
+                    { useNativeDriver: true }
                 )}
                 // onViewableItemsChanged={this.onViewableItemsChanged}
                 contentContainerStyle={styles.scrollViewStyle}
@@ -104,7 +104,7 @@ class VideoScreen extends React.Component {
                                 key={data.id}
                                 source={data.path}
                                 refList={this.list}
-                                height={this.videoHeight ? this.videoHeight : height - 35}
+                                height={this.state.videoHeight ? this.state.videoHeight : height - 35}
                                 index={1}
                                 isViewable={this.state.viewableIndex == 1 && this.state.focused ? true : false} />
                         )
