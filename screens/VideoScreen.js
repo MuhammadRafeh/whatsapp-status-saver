@@ -97,7 +97,7 @@ class VideoScreen extends React.Component {
             >
                 {
                     this.state.videosData.map((data, index) => {
-                        console.log("id", data.id)
+                        // console.log("id", data.id, index)
                         return (
                             <PlayerVideo
                                 key={index}
