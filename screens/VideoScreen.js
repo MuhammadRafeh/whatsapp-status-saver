@@ -69,6 +69,14 @@ class VideoScreen extends React.Component {
         // console.log('currentScreenIndex', parseInt(event.nativeEvent.contentOffset.x / Dimensions.get('window').width));
     }
 
+    moveToNext = (index) => {
+        const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
+        // console.log(typeof nextItem, Number.parseInt(JSON.stringify(this.scrollY)))
+        
+
+        this.list.scrollTo({ animated: true, y:  nextItem})
+    }
+
     render() {
 
         return <View
@@ -101,7 +109,7 @@ class VideoScreen extends React.Component {
                     this.state.videosData.map((data, index) => {
                         return (
                             <PlayerVideo
-                            scrollY={this.scrollY}
+                                moveToNext={this.moveToNext}
                                 key={data.id}
                                 source={data.path}
                                 refList={this.list}
