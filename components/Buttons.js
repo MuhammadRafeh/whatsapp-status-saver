@@ -6,7 +6,7 @@ import share from '../helperFunctions/share';
 const Buttons = React.memo((props) => {
     return (
         <>
-            <TouchableOpacity style={[styles.containerOutset, {bottom: props.share ? props.share : 110 }]} onPress={share.bind(null, props.source)}>
+            <TouchableOpacity style={[styles.containerOutset, {bottom: props.share ? props.share : 110, top: props.shareTop  }]} onPress={share.bind(null, props.source)}>
                 <View style={styles.iconContainer}>
                     <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
                     <View style={{ width: '39%' }}>
@@ -15,7 +15,7 @@ const Buttons = React.memo((props) => {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.containerOutset, { bottom: props.downL ? props.downL: 35 }]} onPress={download.bind(null, props.source)}>
+            <TouchableOpacity style={[styles.containerOutset, { bottom: props.downL ? props.downL: 35, top: props.downTop }]} onPress={download.bind(null, props.source)}>
                 <View style={styles.iconContainer}>
                     <Icon name={'ios-download-outline'} size={40} color={'white'} />
                     <View style={{ width: '66%' }}>

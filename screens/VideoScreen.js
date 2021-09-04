@@ -93,20 +93,19 @@ class VideoScreen extends React.Component {
                     { useNativeDriver: true }
                 )}
                 // onViewableItemsChanged={this.onViewableItemsChanged}
-                contentContainerStyle={styles.scrollViewStyle}
+                contentContainerStyle={{height: this.state.videoHeight}}
                 ref={ref => this.list = ref}
-            // ListEmptyComponent={<EmptyScreenInfo />}
             >
                 {
-                    this.state.videosData.map((data) => {
+                    this.state.videosData.map((data, index) => {
                         return (
                             <PlayerVideo
                                 key={data.id}
                                 source={data.path}
                                 refList={this.list}
                                 height={this.state.videoHeight ? this.state.videoHeight : height - 35}
-                                index={1}
-                                isViewable={this.state.viewableIndex == 1 && this.state.focused ? true : false} />
+                                index={index}
+                                isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
                         )
                     })
                 }
@@ -127,9 +126,5 @@ const styles = StyleSheet.create({
     screen: {
         backgroundColor: '#111212',
         flex: 1
-    },
-    scrollViewStyle: {
-        flexGrow: 1,
-        justifyContent: 'center'
     }
 })
