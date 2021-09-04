@@ -64,15 +64,11 @@ class VideoScreen extends React.Component {
         }
     }
 
-    handleOnScroll(event) {
-        //calculate screenIndex by contentOffset and screen width
-        // console.log('currentScreenIndex', parseInt(event.nativeEvent.contentOffset.x / Dimensions.get('window').width));
-    }
-
     moveToNext = (index) => {
         this.setState({ viewableIndex: index + 1 })
         const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
         this.list.scrollTo({ animated: true, y:  nextItem})
+        this.scrollY.setValue(nextItem)
     }
 
     render() {

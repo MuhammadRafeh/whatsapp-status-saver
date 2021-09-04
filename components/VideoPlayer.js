@@ -121,7 +121,7 @@ class PlayerVideo extends React.Component {
                             {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
                         </Text>
                     </View>
-                    <Buttons source={this.props.source} shareTop={this.props.height - 173} downTop={this.props.height - 100} />
+                    <Buttons source={this.props.source} share={140} downL={70} />
                 </View>
             // </View>
         )
