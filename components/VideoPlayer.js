@@ -57,8 +57,10 @@ class PlayerVideo extends React.Component {
             paused: true
         })
         this.player.seek(0);
+        console.log('end')
         try {
-            this.props.refList.scrollTo({ animated: true, y: this.props.height + this.props.scrollY })
+            // this.props.refList.scrollTo({ animated: true, y: this.props.height + this.props.scrollY, x: 0 })
+            this.props.refList.scrollTo({ animated: true, y: 500 })
         } catch (err) {
 
         }

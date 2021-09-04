@@ -93,7 +93,8 @@ class VideoScreen extends React.Component {
                     { useNativeDriver: true }
                 )}
                 // onViewableItemsChanged={this.onViewableItemsChanged}
-                contentContainerStyle={{height: this.state.videoHeight}}
+                // contentContainerStyle={{height: this.state.videoHeight}}
+                scrollEnabled={false}
                 ref={ref => this.list = ref}
             >
                 {
