@@ -49,7 +49,7 @@ class ImageScreen extends React.Component {
                 this.state.imagesData.length != 0 ? (
                     <ScrollView ref={ref => this.list = ref}>
                         {
-                            this.state.imagesData.map(img => <Image source={img.path} />)
+                            this.state.imagesData.map((img, index) => <Image key={index} source={img.path} />)
                         }
                     </ScrollView>
                 ) : (

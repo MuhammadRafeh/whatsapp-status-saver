@@ -1,19 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
 const { height } = Dimensions.get('window');
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 class VideoScreen extends React.Component {
+    scrollY = new Animated.Value(0);
+
     state = {
         videosData: [], //[{id, name, path, time},...]
         viewableIndex: 0, //-1 in order to stop all videos from play
         viewableIndexWas: -1, //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
-        focused: true
+        focused: true,
+        videoHeight: height
     }
 
     isTheirAnyNeedToScrollToTop = false;
@@ -23,14 +24,13 @@ class VideoScreen extends React.Component {
     tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
-            this.list.scrollToOffset({ animated: true, offset: 0 });
+            this.list.scrollTo({ animated: true, x: 0, y: 0 });
             this.setState({ focused: true })
         } else {
             //when we focus from this we are running the video
             this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
         }
     })
-    videoHeight = height;
     dataLength = 0;
 
     static getDerivedStateFromProps(props, currentState) {
@@ -45,7 +45,7 @@ class VideoScreen extends React.Component {
             this.dataLength = this.state.videosData.length;
 
             if (this.props.navigation.isFocused()) {
-                this.list.scrollToOffset({ animated: true, offset: 0 });
+                this.list.scrollTo({ animated: true, x: 0, y: 0 });
             } else {
                 this.isTheirAnyNeedToScrollToTop = true;
             }
@@ -64,35 +64,53 @@ class VideoScreen extends React.Component {
         }
     }
 
+    handleOnScroll(event) {
+        //calculate screenIndex by contentOffset and screen width
+        // console.log('currentScreenIndex', parseInt(event.nativeEvent.contentOffset.x / Dimensions.get('window').width));
+    }
+
     render() {
+
         return <View
             onLayout={(e) => {
                 const { height } = e.nativeEvent.layout;
-                this.videoHeight = height;
+                this.setState({videoHeight: height})
             }}
             style={styles.screen}
         >
-            <AnimatedFlatList
+            {console.log(this.state.videoHeight, this.scrollY)}
+            <Animated.ScrollView
                 decelerationRate={'fast'}
                 scrollEventThrottle={16}
-                viewabilityConfig={{
-                    viewAreaCoveragePercentThreshold: 60
-                }}
-                onViewableItemsChanged={this.onViewableItemsChanged}
-                contentContainerStyle={styles.flatlistStyle}
-                data={this.state.videosData}
-                keyExtractor={item => item.id}
+                onScroll={Animated.event(
+                    [
+                        {
+                            nativeEvent: {
+                                contentOffset: { y: this.scrollY }
+                            }
+                        }
+                    ],
+                    { useNativeDriver: true } // <-- Add this
+                )}
+                // onViewableItemsChanged={this.onViewableItemsChanged}
+                contentContainerStyle={styles.scrollViewStyle}
                 ref={ref => this.list = ref}
-                renderItem={({ item, index }) => {
-                    return <PlayerVideo
-                        source={item.path}
-                        refList={this.list}
-                        height={this.videoHeight ? this.videoHeight : height - 35}
-                        index={index}
-                        isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
-                }}
-                ListEmptyComponent={<EmptyScreenInfo />}
-            />
+            // ListEmptyComponent={<EmptyScreenInfo />}
+            >
+                {
+                    this.state.videosData.map((data) => {
+                        return (
+                            <PlayerVideo
+                                key={data.id}
+                                source={data.path}
+                                refList={this.list}
+                                height={this.videoHeight ? this.videoHeight : height - 35}
+                                index={1}
+                                isViewable={this.state.viewableIndex == 1 && this.state.focused ? true : false} />
+                        )
+                    })
+                }
+            </Animated.ScrollView>
         </View>
     }
 }
@@ -110,7 +128,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#111212',
         flex: 1
     },
-    flatlistStyle: {
+    scrollViewStyle: {
         flexGrow: 1,
         justifyContent: 'center'
     }
