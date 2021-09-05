@@ -37,7 +37,8 @@ class VideoScreen extends React.Component {
     static getDerivedStateFromProps(props, currentState) {
         if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
         return {
-            videosData: [...props.videosData]
+            videosData: [...props.videosData],
+            viewableIndex: props.isSetupDirectory ? 0: currentState.viewableIndex //Display first video after setup directory
         }
     }
 
@@ -118,7 +119,8 @@ class VideoScreen extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        videosData: state.media.videos //[{id, name, path, time},...]
+        videosData: state.media.videos, //[{id, name, path, time},...]
+        isSetupDirectory: state.media.isSetupDirectory
     }
 }
 

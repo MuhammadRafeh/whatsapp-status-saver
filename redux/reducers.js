@@ -3,13 +3,14 @@ import { SETMEDIA } from "./actions";
 
 const initialMediaState = {
     videos: [],
-    images: []
+    images: [],
+    isSetupDirectory: false
 }
 
 const mediaReducer = (state = initialMediaState, action) => {
     switch (action.type) {
         case SETMEDIA:
-            return action.payload;
+            return {...action.payload, isSetupDirectory: action.isSetupDirectory};
         default:
             return state;
     }
