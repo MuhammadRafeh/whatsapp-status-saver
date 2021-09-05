@@ -19,6 +19,7 @@ class VideoScreen extends React.Component {
 
     isTheirAnyNeedToScrollToTop = false;
     tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
+        console.log('run')
         this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
     })
     tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
@@ -26,7 +27,7 @@ class VideoScreen extends React.Component {
             this.isTheirAnyNeedToScrollToTop = false;
             this.list.scrollTo({ animated: true, x: 0, y: 0 });
             this.setState({ focused: true, viewableIndex: 0 })
-        } else {
+        } else if (this.state.viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
             //when we focus from this we are running the video
             this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
         }
@@ -79,7 +80,7 @@ class VideoScreen extends React.Component {
             }}
             style={styles.screen}
         >
-            {/* {console.log(this.state.videoHeight, this.scrollY)} */}
+            {console.log('index', this.state.viewableIndex)}
             <Animated.ScrollView
                 decelerationRate={'fast'}
                 scrollEventThrottle={16}
