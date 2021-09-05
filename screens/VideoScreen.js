@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 const { height } = Dimensions.get('window');
 
 class VideoScreen extends React.Component {
-    scrollY = new Animated.Value(0);
+    // scrollY = new Animated.Value(0)
 
     state = {
         videosData: [], //[{id, name, path, time},...]
@@ -31,6 +31,7 @@ class VideoScreen extends React.Component {
             this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
         }
     })
+
     dataLength = 0;
 
     static getDerivedStateFromProps(props, currentState) {
@@ -65,7 +66,7 @@ class VideoScreen extends React.Component {
             this.list.scrollTo({ animated: true, y: nextItem })
         } catch (err) {
         }
-        this.scrollY.setValue(nextItem)
+        // this.scrollY = nextItem
     }
 
 
@@ -78,20 +79,32 @@ class VideoScreen extends React.Component {
             }}
             style={styles.screen}
         >
-            {console.log(this.state.videoHeight, this.scrollY)}
+            {/* {console.log(this.state.videoHeight, this.scrollY)} */}
             <Animated.ScrollView
                 decelerationRate={'fast'}
                 scrollEventThrottle={16}
-                onScroll={Animated.event(
-                    [
-                        {
-                            nativeEvent: {
-                                contentOffset: { y: this.scrollY }
-                            }
-                        }
-                    ],
-                    { useNativeDriver: true }
-                )}
+                // this.state = e.nativeEvent.contentOffset.y;
+                // e.nativeEvent.contentOffset.y / this.state.videoHeight
+                onScroll={(e) => {
+                    const offsetY = e.nativeEvent.contentOffset.y;
+
+                    if (Math.round(offsetY / this.state.videoHeight) != this.state.viewableIndex) {
+                        console.log(2323232)
+                        this.setState({viewableIndex: Math.round(offsetY / this.state.videoHeight)})
+                    }
+                    // console.log('Videos Height', offsetY / this.state.videoHeight)
+                }}
+                // onScrollEndDrag={(e) => {
+                //     // console.log('velocity', e.nativeEvent.velocity)
+                //     const velocityY = e.nativeEvent.velocity.y
+                //     const offsetY = e.nativeEvent.contentOffset.y
+                //     if (velocityY > 0) { //going down
+                //         console.log('asdad==========================')
+                //         this.list.scrollTo({animated: false, y: Math.floor(offsetY/this.state.videoHeight)})
+                //     } else if (velocityY < 0) { //going upward
+                        
+                //     }
+                // }}
                 // scrollEnabled={false}
                 ref={ref => this.list = ref}
             >

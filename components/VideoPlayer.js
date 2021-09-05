@@ -9,7 +9,7 @@ function secondsToTime(time) {
     return ~~(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60;
 }
 
-class PlayerVideo extends React.Component {
+class PlayerVideo extends React.PureComponent {
     state = {
         paused: true,
         progress: 0,
