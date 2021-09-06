@@ -1,10 +1,26 @@
 import React from 'react';
-import { View, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
+import Animated, { useSharedValue } from 'react-native-reanimated';
+
 const { height } = Dimensions.get('window');
+
+const PlayerVideoWrapper = (props) => {
+    const translationY = useSharedValue(0);
+
+    return (
+        <PlayerVideo
+            key={props.key}
+            moveToNext={props.moveToNext}
+            source={props.source}
+            height={props.height}
+            index={props.index}
+            isViewable={props.isViewable} />
+    )
+}
 
 class VideoScreen extends React.Component {
 
@@ -38,7 +54,7 @@ class VideoScreen extends React.Component {
         if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
         return {
             videosData: [...props.videosData],
-            viewableIndex: props.isSetupDirectory ? 0: currentState.viewableIndex //Display first video after setup directory
+            viewableIndex: props.isSetupDirectory ? 0 : currentState.viewableIndex //Display first video after setup directory
         }
     }
 
@@ -91,12 +107,13 @@ class VideoScreen extends React.Component {
                                 this.setState({ viewableIndex: index })
                             }
                         }}
+                        scrollEnabled={false}
                         ref={ref => this.list = ref}
                     >
                         {
                             this.state.videosData.map((data, index) => {
                                 return (
-                                    <PlayerVideo
+                                    <PlayerVideoWrapper
                                         key={index}
                                         moveToNext={this.moveToNext}
                                         source={data.path}
