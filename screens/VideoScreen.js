@@ -4,52 +4,53 @@ import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
-import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 
-// const PlayerVideoWrapper = (props) => {
-//     const translationY = useSharedValue(0);
-//     useAnimatedScrollHandler({
+const PlayerVideoWrapper = (props) => {
+    const translationY = useSharedValue(0);
+    // useAnimatedScrollHandler({
 
-//     })
-//     const panHandler = useAnimatedGestureHandler({
-//         onStart: (_, ctx) => {
-//             ctx.translationY = translationY.value;
-//         },
-//         onActive: (e, ctx) => {
-//             translationY.value = ctx.translationY + e.translationY;
-//             // props.list.scrollTo({animated: false, y: translationY.value});
-//         },
+    // })
+    const panHandler = useAnimatedGestureHandler({
+        onStart: (_, ctx) => {
+            ctx.translationY = translationY.value;
+        },
+        onActive: (e, ctx) => {
+            translationY.value = ctx.translationY + e.translationY;
+            props.list.scrollTo({ animated: false, y: translationY.value });
+            // scrollTo(props.)
+        },
 
-//     });
+    });
 
-//     // const style = useAnimatedStyle(() => {
-//     //     return {
-//     //         tr
-//     //     }
-//     // })
+    // const style = useAnimatedStyle(() => {
+    //     return {
+    //         tr
+    //     }
+    // })
 
-//     return (
-//         <PanGestureHandler onGestureEvent={panHandler}>
-//             <Animated.View>
-//                 <PlayerVideo
-//                     moveToNext={props.moveToNext}
-//                     source={props.source}
-//                     height={props.height}
-//                     index={props.index}
-//                     isViewable={props.isViewable} />
-//             </Animated.View>
-//         </PanGestureHandler>
-//     )
-// }
+    return (
+        <PanGestureHandler onGestureEvent={panHandler}>
+            <Animated.View>
+                <PlayerVideo
+                    moveToNext={props.moveToNext}
+                    source={props.source}
+                    height={props.height}
+                    index={props.index}
+                    isViewable={props.isViewable} />
+            </Animated.View>
+        </PanGestureHandler>
+    )
+}
 
 const VideoScreen = props => {
 
     const [storeVideos, isSetupDirectory] = useSelector(state => [state.media.videos, state.media.isSetupDirectory])
 
-    const {navigation} = props;
+    const { navigation } = props;
 
     const [videosData, setVideosData] = useState([])//[{id, name, path, time},...]
     const [viewableIndex, setViewableIndex] = useState(0) //-1 in order to stop all videos from play
@@ -59,6 +60,8 @@ const VideoScreen = props => {
 
     const isTheirAnyNeedToScrollToTop = useRef(false);
     const dataLength = useRef(0);
+    const list = useAnimatedRef();
+
     useEffect(() => {
         const blur = navigation.addListener('blur', e => {
             setViewableIndex(-1);
@@ -72,7 +75,8 @@ const VideoScreen = props => {
         const focus = navigation.addListener('focus', e => {
             if (isTheirAnyNeedToScrollToTop.current) {
                 isTheirAnyNeedToScrollToTop.current = false;
-                // this.list?.scrollTo({ animated: true, x: 0, y: 0 });
+                // list.scrollTo({ animated: true, x: 0, y: 0 });
+                list.current.scrollTo({ x: 0, y: 0 })
                 setFocused(true);
                 setViewableIndex(0)
             } else if (viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
@@ -96,7 +100,7 @@ const VideoScreen = props => {
             dataLength.current = videosData.length;
 
             if (navigation.isFocused()) {
-                // this.list?.scrollTo({ animated: true, x: 0, y: 0 });
+                list.current.scrollTo({ x: 0, y: 0 })
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
             }
@@ -107,8 +111,9 @@ const VideoScreen = props => {
         setViewableIndex(index + 1)
         const nextItem = (index * videoHeight) + videoHeight
         try {
-            // this.list?.scrollTo({ animated: true, y: nextItem })
+            list.current.scrollTo({ x: 0, y: nextItem })
         } catch (err) {
+            console.log(err, 'error--------------')
         }
     }
 
@@ -133,14 +138,14 @@ const VideoScreen = props => {
                             setViewableIndex(index)
                         }
                     }}
-                    scrollEnabled={true}
-                    // ref={ref => this.list = ref}
+                    scrollEnabled={false}
+                    ref={list}
                 >
                     {
                         videosData.map((data, index) => {
                             return (
                                 <PlayerVideo
-
+                                    // list={list}
                                     key={index}
                                     moveToNext={moveToNext}
                                     source={data.path}

@@ -57,7 +57,7 @@ class PlayerVideo extends React.PureComponent {
             paused: true
         })
         this.player.seek(0);
-        console.log('end')
+        // console.log('end')
         this.props.moveToNext(this.props.index)
     }
 
@@ -79,7 +79,7 @@ class PlayerVideo extends React.PureComponent {
             // <View style={{position: 'relative', height: this.props.height }}>
 
             <View style={{ flex: 1 }}>
-                {console.log(this.props.height, 'asdasd')}
+                {/* {console.log(this.props.height, 'asdasd')} */}
                 <View>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
                         <Video
