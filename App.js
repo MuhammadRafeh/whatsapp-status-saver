@@ -167,14 +167,14 @@ const App = () => {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }} style={{ paddingHorizontal: 10, paddingTop: 15, paddingLeft: 10}}>
+          }} style={{ paddingHorizontal: 10, paddingTop: 15, paddingLeft: 10 }}>
             <Text numberOfLines={1} adjustsFontSizeToFit={true}>
               <Icon name={'settings'} size={23} color={'white'} />
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }} style={{ paddingLeft: 10, paddingRight: 15, paddingTop: 15}}>
+          }} style={{ paddingLeft: 10, paddingRight: 15, paddingTop: 15 }}>
             <Text numberOfLines={1} adjustsFontSizeToFit={true}>
               <Icon name={'ios-information-circle'} size={25} color={'white'} />
             </Text>
@@ -190,9 +190,9 @@ const App = () => {
 
 const AppWrapper = () => {
   return (
-    <Provider store={store}>
-      <App />
-    </Provider>
+      <Provider store={store}>
+        <App />
+      </Provider>
   )
 }
 
