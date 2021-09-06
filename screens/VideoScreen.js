@@ -1,147 +1,166 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
-import Animated, { useSharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 
-const PlayerVideoWrapper = (props) => {
-    const translationY = useSharedValue(0);
+// const PlayerVideoWrapper = (props) => {
+//     const translationY = useSharedValue(0);
+//     useAnimatedScrollHandler({
 
-    return (
-        <PlayerVideo
-            key={props.key}
-            moveToNext={props.moveToNext}
-            source={props.source}
-            height={props.height}
-            index={props.index}
-            isViewable={props.isViewable} />
-    )
-}
+//     })
+//     const panHandler = useAnimatedGestureHandler({
+//         onStart: (_, ctx) => {
+//             ctx.translationY = translationY.value;
+//         },
+//         onActive: (e, ctx) => {
+//             translationY.value = ctx.translationY + e.translationY;
+//             // props.list.scrollTo({animated: false, y: translationY.value});
+//         },
 
-class VideoScreen extends React.Component {
+//     });
 
-    state = {
-        videosData: [], //[{id, name, path, time},...]
-        viewableIndex: 0, //-1 in order to stop all videos from play
-        viewableIndexWas: -1, //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
-        focused: true,
-        videoHeight: height
-    }
+//     // const style = useAnimatedStyle(() => {
+//     //     return {
+//     //         tr
+//     //     }
+//     // })
 
-    isTheirAnyNeedToScrollToTop = false;
-    tabPressListenerBlur = this.props.navigation.addListener('blur', e => {
-        console.log('run')
-        this.setState({ viewableIndex: -1, viewableIndexWas: this.state.viewableIndex, focused: false })
-    })
-    tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
-        if (this.isTheirAnyNeedToScrollToTop) {
-            this.isTheirAnyNeedToScrollToTop = false;
-            this.list?.scrollTo({ animated: true, x: 0, y: 0 });
-            this.setState({ focused: true, viewableIndex: 0 })
-        } else if (this.state.viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
-            //when we focus from this we are running the video
-            this.setState({ viewableIndex: this.state.viewableIndexWas, viewableIndexWas: -1, focused: true })
-        }
-    })
+//     return (
+//         <PanGestureHandler onGestureEvent={panHandler}>
+//             <Animated.View>
+//                 <PlayerVideo
+//                     moveToNext={props.moveToNext}
+//                     source={props.source}
+//                     height={props.height}
+//                     index={props.index}
+//                     isViewable={props.isViewable} />
+//             </Animated.View>
+//         </PanGestureHandler>
+//     )
+// }
 
-    dataLength = 0;
+const VideoScreen = props => {
 
-    static getDerivedStateFromProps(props, currentState) {
-        if (JSON.stringify(props.videosData) === JSON.stringify(currentState.videosData)) return null;
-        return {
-            videosData: [...props.videosData],
-            viewableIndex: props.isSetupDirectory ? 0 : currentState.viewableIndex //Display first video after setup directory
-        }
-    }
+    const [storeVideos, isSetupDirectory] = useSelector(state => [state.media.videos, state.media.isSetupDirectory])
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.videosData.length > this.dataLength) { //We are seeing if we need to scroll to top or not
-            this.dataLength = this.state.videosData.length;
+    const {navigation} = props;
 
-            if (this.props.navigation.isFocused()) {
-                this.list?.scrollTo({ animated: true, x: 0, y: 0 });
+    const [videosData, setVideosData] = useState([])//[{id, name, path, time},...]
+    const [viewableIndex, setViewableIndex] = useState(0) //-1 in order to stop all videos from play
+    const [viewableIndexWas, setViewableIndexWas] = useState(-1)  //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
+    const [focused, setFocused] = useState(true)
+    const [videoHeight, setVideoHeight] = useState(height)
+
+    const isTheirAnyNeedToScrollToTop = useRef(false);
+    const dataLength = useRef(0);
+    useEffect(() => {
+        const blur = navigation.addListener('blur', e => {
+            setViewableIndex(-1);
+            setViewableIndexWas(viewableIndex);
+            setFocused(false)
+        })
+        return blur;
+    }, [viewableIndex, navigation])
+
+    useEffect(() => {
+        const focus = navigation.addListener('focus', e => {
+            if (isTheirAnyNeedToScrollToTop.current) {
+                isTheirAnyNeedToScrollToTop.current = false;
+                // this.list?.scrollTo({ animated: true, x: 0, y: 0 });
+                setFocused(true);
+                setViewableIndex(0)
+            } else if (viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
+                //when we focus from this we are running the video
+                setViewableIndex(viewableIndexWas);
+                setViewableIndexWas(-1);
+                setFocused(true);
+            }
+        })
+        return focus;
+    }, [isTheirAnyNeedToScrollToTop.current, viewableIndexWas])
+
+    useEffect(() => {
+        if (JSON.stringify(storeVideos) === JSON.stringify(videosData)) return
+        setVideosData([...storeVideos]);
+        setViewableIndex(isSetupDirectory ? 0 : viewableIndex)//Display first video after setup directory
+    }, [storeVideos])
+
+    useEffect(() => {
+        if (videosData.length > dataLength.current) { //We are seeing if we need to scroll to top or not
+            dataLength.current = videosData.length;
+
+            if (navigation.isFocused()) {
+                // this.list?.scrollTo({ animated: true, x: 0, y: 0 });
             } else {
-                this.isTheirAnyNeedToScrollToTop = true;
+                isTheirAnyNeedToScrollToTop.current = true;
             }
         }
-    }
+    }, [videosData, navigation])
 
-    componentWillUnmount() {
-        this.tabPressListenerBlur();
-        this.tabPressListenerFocus();
-    }
-
-    moveToNext = (index) => {
-        this.setState({ viewableIndex: index + 1 })
-        // const nextItem = Number.parseInt(JSON.stringify(this.scrollY)) + this.state.videoHeight
-        const nextItem = (index * this.state.videoHeight) + this.state.videoHeight
+    const moveToNext = (index) => {
+        setViewableIndex(index + 1)
+        const nextItem = (index * videoHeight) + videoHeight
         try {
-            this.list?.scrollTo({ animated: true, y: nextItem })
+            // this.list?.scrollTo({ animated: true, y: nextItem })
         } catch (err) {
         }
     }
 
-
-    render() {
-
-        return <View
-            onLayout={(e) => {
-                const { height } = e.nativeEvent.layout;
-                this.setState({ videoHeight: height })
-            }}
-            style={styles.screen}
-        >
-            {
-                this.state.videosData.length != 0 ? (
-                    <Animated.ScrollView
-                        decelerationRate={'fast'}
-                        scrollEventThrottle={16}
-                        onScroll={(e) => {
-                            const offsetY = e.nativeEvent.contentOffset.y;
-                            const index = Math.round(offsetY / this.state.videoHeight)
-                            if (index != this.state.viewableIndex) {
-                                this.setState({ viewableIndex: index })
-                            }
-                        }}
-                        scrollEnabled={false}
-                        ref={ref => this.list = ref}
-                    >
-                        {
-                            this.state.videosData.map((data, index) => {
-                                return (
-                                    <PlayerVideoWrapper
-                                        key={index}
-                                        moveToNext={this.moveToNext}
-                                        source={data.path}
-                                        height={this.state.videoHeight ? this.state.videoHeight : height - 35}
-                                        index={index}
-                                        isViewable={this.state.viewableIndex == index && this.state.focused ? true : false} />
-                                )
-                            })
+    return <View
+        onLayout={(e) => {
+            const { height } = e.nativeEvent.layout;
+            // this.setState({ videoHeight: height })
+            setVideoHeight(height)
+        }}
+        style={styles.screen}
+    >
+        {
+            videosData.length != 0 ? (
+                <Animated.ScrollView
+                    decelerationRate={'fast'}
+                    scrollEventThrottle={16}
+                    onScroll={(e) => {
+                        const offsetY = e.nativeEvent.contentOffset.y;
+                        const index = Math.round(offsetY / videoHeight)
+                        if (index != viewableIndex) {
+                            // this.setState({ viewableIndex: index })
+                            setViewableIndex(index)
                         }
-                    </Animated.ScrollView>
-                ) : (
-                    <View style={styles.emptyStyle}>
-                        <EmptyScreenInfo />
-                    </View>
-                )
-            }
-        </View>
-    }
+                    }}
+                    scrollEnabled={true}
+                    // ref={ref => this.list = ref}
+                >
+                    {
+                        videosData.map((data, index) => {
+                            return (
+                                <PlayerVideo
+
+                                    key={index}
+                                    moveToNext={moveToNext}
+                                    source={data.path}
+                                    height={videoHeight ? videoHeight : height - 35}
+                                    index={index}
+                                    isViewable={viewableIndex == index && focused ? true : false} />
+                            )
+                        })
+                    }
+                </Animated.ScrollView>
+            ) : (
+                <View style={styles.emptyStyle}>
+                    <EmptyScreenInfo />
+                </View>
+            )
+        }
+    </View>
 }
 
-const mapStateToProps = state => {
-    return {
-        videosData: state.media.videos, //[{id, name, path, time},...]
-        isSetupDirectory: state.media.isSetupDirectory
-    }
-}
-
-export default connect(mapStateToProps, null)(VideoScreen);
+export default VideoScreen;
 
 const styles = StyleSheet.create({
     screen: {
