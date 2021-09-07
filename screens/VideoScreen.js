@@ -4,7 +4,7 @@ import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
-import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI } from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI, interpolate, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
@@ -15,13 +15,14 @@ const PlayerVideoWrapper = (props) => {
 
     // })
     const panHandler = useAnimatedGestureHandler({
-        onStart: (_, ctx) => {
-            ctx.translationY = translationY.value;
-        },
+        // onStart: (_, ctx) => {
+
+        // },
         onActive: (e, ctx) => {
-            translationY.value = ctx.translationY + e.translationY;
-            props.list.scrollTo({ animated: false, y: translationY.value });
-            // scrollTo(props.)
+            translationY.value = e.translationY;
+            // props.list.current.scrollTo({ animated: false, x:0, y: translationY.value });
+            scrollTo(props.list, 0, 1, false)
+            console.log(translationY.value)
         },
 
     });
@@ -107,15 +108,43 @@ const VideoScreen = props => {
         }
     }, [videosData, navigation])
 
+
+    const scrollY = useSharedValue(0);
+    const translationY = useSharedValue(0);
+
     const moveToNext = (index) => {
         setViewableIndex(index + 1)
         const nextItem = (index * videoHeight) + videoHeight
         try {
             list.current.scrollTo({ x: 0, y: nextItem })
+            scrollY.value = nextItem;
         } catch (err) {
             console.log(err, 'error--------------')
         }
     }
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (e, ctx) => {
+            const offsetY = e.contentOffset.y;
+            const index = Math.round(offsetY / videoHeight)
+            if (index != viewableIndex) {
+                runOnJS(setViewableIndex)(index)
+            }
+        }
+    })
+
+    const panHandler = useAnimatedGestureHandler({
+        onActive: (e, ctx) => {
+            translationY.value = e.translationY;
+            scrollTo(list, 0, scrollY.value + (-translationY.value), false)
+        },
+        onEnd: (e) => {
+            scrollY.value = scrollY.value + (-translationY.value)
+            console.log(-e.translationY)
+        }
+
+    });
+    console.log('adsasd', videoHeight)
 
     return <View
         onLayout={(e) => {
@@ -130,28 +159,33 @@ const VideoScreen = props => {
                 <Animated.ScrollView
                     decelerationRate={'fast'}
                     scrollEventThrottle={16}
-                    onScroll={(e) => {
-                        const offsetY = e.nativeEvent.contentOffset.y;
-                        const index = Math.round(offsetY / videoHeight)
-                        if (index != viewableIndex) {
-                            // this.setState({ viewableIndex: index })
-                            setViewableIndex(index)
-                        }
-                    }}
+                    // onScroll={(e) => {
+                    //     const offsetY = e.nativeEvent.contentOffset.y;
+                    //     const index = Math.round(offsetY / videoHeight)
+                    //     if (index != viewableIndex) {
+                    //         // this.setState({ viewableIndex: index })
+                    //         setViewableIndex(index)
+                    //     }
+                    // }}
+                    onScroll={scrollHandler}
                     scrollEnabled={false}
                     ref={list}
                 >
                     {
                         videosData.map((data, index) => {
                             return (
-                                <PlayerVideo
-                                    // list={list}
-                                    key={index}
-                                    moveToNext={moveToNext}
-                                    source={data.path}
-                                    height={videoHeight ? videoHeight : height - 35}
-                                    index={index}
-                                    isViewable={viewableIndex == index && focused ? true : false} />
+                                <View key={index}>
+                                    <PanGestureHandler onGestureEvent={panHandler}>
+                                        <Animated.View>
+                                            <PlayerVideo
+                                                moveToNext={moveToNext}
+                                                source={data.path}
+                                                height={videoHeight ? videoHeight : height - 35}
+                                                index={index}
+                                                isViewable={viewableIndex == index && focused ? true : false} />
+                                        </Animated.View>
+                                    </PanGestureHandler>
+                                </View>
                             )
                         })
                     }
