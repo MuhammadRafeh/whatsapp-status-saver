@@ -9,45 +9,10 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 
-const PlayerVideoWrapper = (props) => {
-    const translationY = useSharedValue(0);
-    // useAnimatedScrollHandler({
-
-    // })
-    const panHandler = useAnimatedGestureHandler({
-        // onStart: (_, ctx) => {
-
-        // },
-        onActive: (e, ctx) => {
-            translationY.value = e.translationY;
-            // props.list.current.scrollTo({ animated: false, x:0, y: translationY.value });
-            scrollTo(props.list, 0, 1, false)
-            console.log(translationY.value)
-        },
-
-    });
-
-    // const style = useAnimatedStyle(() => {
-    //     return {
-    //         tr
-    //     }
-    // })
-
-    return (
-        <PanGestureHandler onGestureEvent={panHandler}>
-            <Animated.View>
-                <PlayerVideo
-                    moveToNext={props.moveToNext}
-                    source={props.source}
-                    height={props.height}
-                    index={props.index}
-                    isViewable={props.isViewable} />
-            </Animated.View>
-        </PanGestureHandler>
-    )
-}
-
 const VideoScreen = props => {
+    const scrollY = useSharedValue(0);
+    const translationY = useSharedValue(0);
+    const scrollHeight = useSharedValue();
 
     const [storeVideos, isSetupDirectory] = useSelector(state => [state.media.videos, state.media.isSetupDirectory])
 
@@ -76,8 +41,8 @@ const VideoScreen = props => {
         const focus = navigation.addListener('focus', e => {
             if (isTheirAnyNeedToScrollToTop.current) {
                 isTheirAnyNeedToScrollToTop.current = false;
-                // list.scrollTo({ animated: true, x: 0, y: 0 });
                 list.current.scrollTo({ x: 0, y: 0 })
+                scrollY.value = 0;
                 setFocused(true);
                 setViewableIndex(0)
             } else if (viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
@@ -94,6 +59,9 @@ const VideoScreen = props => {
         if (JSON.stringify(storeVideos) === JSON.stringify(videosData)) return
         setVideosData([...storeVideos]);
         setViewableIndex(isSetupDirectory ? 0 : viewableIndex)//Display first video after setup directory
+        if (isSetupDirectory) {
+            scrollY.value = 0
+        }
     }, [storeVideos])
 
     useEffect(() => {
@@ -102,6 +70,7 @@ const VideoScreen = props => {
 
             if (navigation.isFocused()) {
                 list.current.scrollTo({ x: 0, y: 0 })
+                scrollY.value = 0
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
             }
@@ -109,8 +78,6 @@ const VideoScreen = props => {
     }, [videosData, navigation])
 
 
-    const scrollY = useSharedValue(0);
-    const translationY = useSharedValue(0);
 
     const moveToNext = (index) => {
         if (videosData[index + 1]) {
@@ -122,7 +89,7 @@ const VideoScreen = props => {
     }
 
     const scrollHandler = useAnimatedScrollHandler({
-        onScroll: (e, ctx) => {
+        onScroll: (e) => {
             const offsetY = e.contentOffset.y;
             const index = Math.round(offsetY / videoHeight)
             if (index != viewableIndex) {
@@ -132,45 +99,41 @@ const VideoScreen = props => {
     })
 
     const panHandler = useAnimatedGestureHandler({
-        onActive: (e, ctx) => {
+        onActive: (e) => {
             translationY.value = e.translationY;
             scrollTo(list, 0, scrollY.value + (-translationY.value), false)
         },
         onFinish: (e) => {
-            // e.y
-            const index = Math.round((scrollY.value + (-translationY.value)) / videoHeight) //index
-
-            // scrollTo(list, 0,withTiming(nextItem, {duration: 1}), false)
+            const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index
+            console.log(index, scrollHeight.value)
             if (e.velocityY < -0.20 && index!=videosData.length-1) {//going down
 
-                const nextItem = ((index) * videoHeight) + videoHeight
+                const nextItem = ((index) * scrollHeight.value) + scrollHeight.value
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
                 return;
 
             } else if (e.velocityY > 0.20 && index != 0) { //going up
 
-                const nextItem = ((index - 1) * videoHeight)
+                const nextItem = ((index - 1) * scrollHeight.value)
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
                 return;
 
             } else {
-                const nextItem = ((index) * videoHeight)
+                const nextItem = ((index) * scrollHeight.value)
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
                 return;
             }
         }
-
     });
-    console.log('adsasd', videoHeight)
 
     return <View
         onLayout={(e) => {
             const { height } = e.nativeEvent.layout;
-            // this.setState({ videoHeight: height })
             setVideoHeight(height)
+            scrollHeight.value = height;
         }}
         style={styles.screen}
     >
@@ -179,14 +142,6 @@ const VideoScreen = props => {
                 <Animated.ScrollView
                     decelerationRate={'fast'}
                     scrollEventThrottle={16}
-                    // onScroll={(e) => {
-                    //     const offsetY = e.nativeEvent.contentOffset.y;
-                    //     const index = Math.round(offsetY / videoHeight)
-                    //     if (index != viewableIndex) {
-                    //         // this.setState({ viewableIndex: index })
-                    //         setViewableIndex(index)
-                    //     }
-                    // }}
                     onScroll={scrollHandler}
                     scrollEnabled={false}
                     ref={list}
