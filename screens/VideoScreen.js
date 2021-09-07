@@ -4,7 +4,7 @@ import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
-import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI, interpolate, runOnJS, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useSharedValue, useAnimatedRef, scrollTo, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
@@ -104,7 +104,7 @@ const VideoScreen = props => {
             scrollTo(list, 0, scrollY.value + (-translationY.value), false)
         },
         onFinish: (e) => {
-            const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index
+            const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index also gives bad values
             if (e.velocityY < -0.20 && (index<videosData.length-1 && index>=0 )) {//going down
                 console.log(index, scrollHeight.value)
 
