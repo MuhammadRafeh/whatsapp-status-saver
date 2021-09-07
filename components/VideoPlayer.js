@@ -9,7 +9,7 @@ function secondsToTime(time) {
     return ~~(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60;
 }
 
-class PlayerVideo extends React.Component {
+class PlayerVideo extends React.PureComponent {
     state = {
         paused: true,
         progress: 0,
@@ -57,11 +57,8 @@ class PlayerVideo extends React.Component {
             paused: true
         })
         this.player.seek(0);
-        try {
-            this.props.refList.scrollToIndex({ animated: true, index: this.props.index + 1, viewPosition: 0 })
-        } catch (err) {
-
-        }
+        // console.log('end')
+        this.props.moveToNext(this.props.index)
     }
 
     handleProgress = (progress) => {
@@ -79,7 +76,10 @@ class PlayerVideo extends React.Component {
     render() {
         const { width, height } = Dimensions.get('window');
         return (
+            // <View style={{position: 'relative', height: this.props.height }}>
+
             <View style={{ flex: 1 }}>
+                {/* {console.log(this.props.height, 'asdasd')} */}
                 <View>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
                         <Video
@@ -94,7 +94,7 @@ class PlayerVideo extends React.Component {
                         />
                     </TouchableWithoutFeedback>
                 </View>
-                <View style={styles.controls}>
+                <View style={[styles.controls, { top: this.props.height - 48 }]}>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
                         <Icon name={!this.state.paused ? 'pause' : 'play'} size={30} color={'#FFF'} />
                     </TouchableWithoutFeedback>
@@ -115,8 +115,9 @@ class PlayerVideo extends React.Component {
                         {secondsToTime(Math.floor(this.state.progress * this.state.duration))}
                     </Text>
                 </View>
-                <Buttons source={this.props.source} share={140} downL={70}/>
+                <Buttons source={this.props.source} share={140} downL={70} />
             </View>
+            // </View>
         )
     }
 }

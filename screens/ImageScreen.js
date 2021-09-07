@@ -13,7 +13,7 @@ class ImageScreen extends React.Component {
     tabPressListenerFocus = this.props.navigation.addListener('focus', e => {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
-            this.list.scrollTo({ x: 0, y: 0, animated: true })
+            this.list?.scrollTo({ x: 0, y: 0, animated: true })
         }
     })
     dataLength = 0;
@@ -30,7 +30,7 @@ class ImageScreen extends React.Component {
             this.dataLength = this.state.imagesData.length;
 
             if (this.props.navigation.isFocused()) {
-                this.list.scrollTo({ x: 0, y: 0, animated: true })
+                this.list?.scrollTo({ x: 0, y: 0, animated: true })
             } else {
                 this.isTheirAnyNeedToScrollToTop = true;
             }
@@ -49,7 +49,7 @@ class ImageScreen extends React.Component {
                 this.state.imagesData.length != 0 ? (
                     <ScrollView ref={ref => this.list = ref}>
                         {
-                            this.state.imagesData.map(img => <Image source={img.path} />)
+                            this.state.imagesData.map((img, index) => <Image key={index} source={img.path} />)
                         }
                     </ScrollView>
                 ) : (

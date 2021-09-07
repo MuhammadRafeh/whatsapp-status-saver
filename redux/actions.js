@@ -14,7 +14,8 @@ export const setMedia = (isSetupDirectory  = false) => {
         }
         dispatch({
             type: SETMEDIA,
-            payload: data
+            payload: data,
+            isSetupDirectory
         });
     }
 }

@@ -6,7 +6,7 @@ import share from '../helperFunctions/share';
 const Buttons = React.memo((props) => {
     return (
         <>
-            <TouchableOpacity style={[styles.containerOutset, {bottom: props.share ? props.share : 110 }]} onPress={share.bind(null, props.source)}>
+            <TouchableOpacity style={[styles.containerOutset, {bottom: props.share ? props.share : 110  }]} onPress={share.bind(null, props.source)}>
                 <View style={styles.iconContainer}>
                     <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
                     <View style={{ width: '39%' }}>
