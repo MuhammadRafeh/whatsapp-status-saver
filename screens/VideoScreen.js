@@ -4,7 +4,7 @@ import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
-import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI, interpolate, runOnJS } from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, useAnimatedRef, scrollTo, runOnUI, interpolate, runOnJS, withTiming } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
@@ -113,13 +113,11 @@ const VideoScreen = props => {
     const translationY = useSharedValue(0);
 
     const moveToNext = (index) => {
-        setViewableIndex(index + 1)
-        const nextItem = (index * videoHeight) + videoHeight
-        try {
+        if (videosData[index + 1]) {
+            setViewableIndex(index + 1)
+            const nextItem = (index * videoHeight) + videoHeight
             list.current.scrollTo({ x: 0, y: nextItem })
             scrollY.value = nextItem;
-        } catch (err) {
-            console.log(err, 'error--------------')
         }
     }
 
@@ -138,9 +136,31 @@ const VideoScreen = props => {
             translationY.value = e.translationY;
             scrollTo(list, 0, scrollY.value + (-translationY.value), false)
         },
-        onEnd: (e) => {
-            scrollY.value = scrollY.value + (-translationY.value)
-            console.log(-e.translationY)
+        onFinish: (e) => {
+            // e.y
+            const index = Math.round((scrollY.value + (-translationY.value)) / videoHeight) //index
+
+            // scrollTo(list, 0,withTiming(nextItem, {duration: 1}), false)
+            if (e.velocityY < -0.20 && index!=videosData.length-1) {//going down
+
+                const nextItem = ((index) * videoHeight) + videoHeight
+                scrollTo(list, 0, nextItem, true)
+                scrollY.value = nextItem
+                return;
+
+            } else if (e.velocityY > 0.20 && index != 0) { //going up
+
+                const nextItem = ((index - 1) * videoHeight)
+                scrollTo(list, 0, nextItem, true)
+                scrollY.value = nextItem
+                return;
+
+            } else {
+                const nextItem = ((index) * videoHeight)
+                scrollTo(list, 0, nextItem, true)
+                scrollY.value = nextItem
+                return;
+            }
         }
 
     });
