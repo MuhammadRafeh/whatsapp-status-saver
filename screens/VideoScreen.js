@@ -105,22 +105,22 @@ const VideoScreen = props => {
         },
         onFinish: (e) => {
             const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index
-            console.log(index, scrollHeight.value)
-            if (e.velocityY < -0.20 && index!=videosData.length-1) {//going down
+            if (e.velocityY < -0.20 && (index<videosData.length-1 && index>=0 )) {//going down
+                console.log(index, scrollHeight.value)
 
                 const nextItem = ((index) * scrollHeight.value) + scrollHeight.value
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
                 return;
 
-            } else if (e.velocityY > 0.20 && index != 0) { //going up
+            } else if (e.velocityY > 0.20 && (index<=videosData.length-1 && index>0)) { //going up
 
                 const nextItem = ((index - 1) * scrollHeight.value)
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
                 return;
 
-            } else {
+            } else if (index<=videosData.length-1 && index>=0)  {
                 const nextItem = ((index) * scrollHeight.value)
                 scrollTo(list, 0, nextItem, true)
                 scrollY.value = nextItem
