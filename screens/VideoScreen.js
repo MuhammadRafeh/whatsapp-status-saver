@@ -6,6 +6,7 @@ import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
 import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useSharedValue, useAnimatedRef, scrollTo, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import TabBarIcon from '../components/TabBarIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -45,6 +46,9 @@ const VideoScreen = props => {
                 scrollY.value = 0;
                 setFocused(true);
                 setViewableIndex(0)
+                navigation.setOptions({
+                    tabBarLabel: undefined
+                })
             } else if (viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
                 //when we focus from this we are running the video
                 setViewableIndex(viewableIndexWas);
@@ -73,7 +77,12 @@ const VideoScreen = props => {
                 scrollY.value = 0
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
+                navigation.setOptions({
+                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                })
             }
+        } else {
+            dataLength.current = videosData.length;
         }
     }, [videosData, navigation])
 
