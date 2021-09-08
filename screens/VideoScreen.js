@@ -6,6 +6,7 @@ import EmptyScreenInfo from '../components/EmptyScreenInfo';
 
 import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useSharedValue, useAnimatedRef, scrollTo, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import TabBarIcon from '../components/TabBarIcon';
 
 const { height } = Dimensions.get('window');
 
@@ -73,6 +74,9 @@ const VideoScreen = props => {
                 scrollY.value = 0
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
+                navigation.setOptions({
+                    tabBarLabel: ({color, focused}) => <TabBarIcon color={color} focused={focused} />
+                })
             }
         }
     }, [videosData, navigation])
