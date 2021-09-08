@@ -81,6 +81,8 @@ const VideoScreen = props => {
                     tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
                 })
             }
+        } else {
+            dataLength.current = videosData.length;
         }
     }, [videosData, navigation])
 

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Dimensions, ScrollView } from 'react-
 import Image from '../components/Image';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
+import TabBarIcon from '../components/TabBarIcon';
 
 class ImageScreen extends React.Component {
     state = {
@@ -14,6 +15,9 @@ class ImageScreen extends React.Component {
         if (this.isTheirAnyNeedToScrollToTop) {
             this.isTheirAnyNeedToScrollToTop = false;
             this.list?.scrollTo({ x: 0, y: 0, animated: true })
+            this.props.navigation.setOptions({
+                tabBarLabel: undefined
+            })
         }
     })
     dataLength = 0;
@@ -33,7 +37,12 @@ class ImageScreen extends React.Component {
                 this.list?.scrollTo({ x: 0, y: 0, animated: true })
             } else {
                 this.isTheirAnyNeedToScrollToTop = true;
+                this.props.navigation.setOptions({
+                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
+                })
             }
+        } else {
+                this.dataLength = this.state.imagesData.length;
         }
     }
 
