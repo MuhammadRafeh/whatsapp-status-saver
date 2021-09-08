@@ -46,6 +46,9 @@ const VideoScreen = props => {
                 scrollY.value = 0;
                 setFocused(true);
                 setViewableIndex(0)
+                navigation.setOptions({
+                    tabBarLabel: undefined
+                })
             } else if (viewableIndexWas != -1) { //if it's -1 means that it's running on initial render
                 //when we focus from this we are running the video
                 setViewableIndex(viewableIndexWas);
@@ -75,7 +78,7 @@ const VideoScreen = props => {
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
                 navigation.setOptions({
-                    tabBarLabel: ({color, focused}) => <TabBarIcon color={color} focused={focused} />
+                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
                 })
             }
         }
