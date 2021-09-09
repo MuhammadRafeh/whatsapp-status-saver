@@ -11,8 +11,7 @@ function MyTabs() {
                 style: { backgroundColor: 'black' },
                 activeTintColor: 'white'
             }}>
-            <Tab.Screen name="Videos" component={VideoScreen}
-            />
+            <Tab.Screen name="Videos" component={VideoScreen} />
             <Tab.Screen name="Images" component={ImageScreen} />
         </Tab.Navigator>
     );
