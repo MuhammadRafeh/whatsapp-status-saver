@@ -12,7 +12,6 @@ const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
     const scrollY = useSharedValue(0);
-    const translationY = useSharedValue(0);
     const scrollHeight = useSharedValue();
 
     const [storeVideos, isSetupDirectory] = useSelector(state => [state.media.videos, state.media.isSetupDirectory])
@@ -65,9 +64,9 @@ const VideoScreen = props => {
         setViewableIndex(isSetupDirectory ? 0 : viewableIndex)//Display first video after setup directory
         if (isSetupDirectory) {
             scrollY.value = 0
-            if (!navigation.isFocused() && storeVideos.length > 1){
+            if (!navigation.isFocused() && storeVideos.length > 1) {
                 navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                    tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'VIDEOS'} />
                 })
             } else {
                 navigation.setOptions({
@@ -87,7 +86,7 @@ const VideoScreen = props => {
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
                 navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                    tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'VIDEOS'} />
                 })
             }
         } else {
@@ -109,7 +108,7 @@ const VideoScreen = props => {
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (e) => {
             const offsetY = e.contentOffset.y;
-            const index = Math.round(offsetY / videoHeight)
+            const index = Math.round(offsetY / scrollHeight.value)
             if (index != viewableIndex) {
                 runOnJS(setViewableIndex)(index)
             }
@@ -118,32 +117,30 @@ const VideoScreen = props => {
 
     const panHandler = useAnimatedGestureHandler({
         onActive: (e) => {
-            translationY.value = e.translationY;
-            scrollTo(list, 0, scrollY.value + (-translationY.value), false)
+            scrollTo(list, 0, scrollY.value + (-e.translationY), false)
         },
         onFinish: (e) => {
-            const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index also gives bad values
-            if (e.velocityY < -0.20 && (index<videosData.length-1 && index>=0 )) {//going down
-                console.log(index, scrollHeight.value)
+            const currentScroll = (scrollY.value + (-e.translationY)) / scrollHeight.value;
+            const index = Math.round(currentScroll) //index also gives bad values
+            let nextItem = 0;
+            if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
+                if (Math.max(index, currentScroll) == currentScroll){
+                    nextItem = ((index) * scrollHeight.value) + scrollHeight.value
+                } else {
+                    nextItem = ((index) * scrollHeight.value)
+                }
+            } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
+                if (Math.min(index, currentScroll) == currentScroll){
+                    nextItem = ((index - 1) * scrollHeight.value)
+                } else {
+                    nextItem = (index * scrollHeight.value)
+                }
+            } else if (index <= videosData.length - 1 && index >= 0) {
 
-                const nextItem = ((index) * scrollHeight.value) + scrollHeight.value
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
-
-            } else if (e.velocityY > 0.20 && (index<=videosData.length-1 && index>0)) { //going up
-
-                const nextItem = ((index - 1) * scrollHeight.value)
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
-
-            } else if (index<=videosData.length-1 && index>=0)  {
-                const nextItem = ((index) * scrollHeight.value)
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
+                nextItem = ((index) * scrollHeight.value)
             }
+            scrollTo(list, 0, nextItem, true)
+            scrollY.value = nextItem
         }
     });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import Video from 'react-native-video'
 import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -57,7 +57,6 @@ class PlayerVideo extends React.PureComponent {
             paused: true
         })
         this.player.seek(0);
-        // console.log('end')
         this.props.moveToNext(this.props.index)
     }
 
@@ -74,12 +73,8 @@ class PlayerVideo extends React.PureComponent {
     }
 
     render() {
-        const { width, height } = Dimensions.get('window');
         return (
-            // <View style={{position: 'relative', height: this.props.height }}>
-
             <View style={{ flex: 1 }}>
-                {/* {console.log(this.props.height, 'asdasd')} */}
                 <View>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
                         <Video
@@ -107,7 +102,6 @@ class PlayerVideo extends React.PureComponent {
                                 borderColor="#FFF"
                                 width={250}
                                 height={20}
-
                             />
                         </View>
                     </TouchableWithoutFeedback>
@@ -117,7 +111,6 @@ class PlayerVideo extends React.PureComponent {
                 </View>
                 <Buttons source={this.props.source} share={140} downL={70} />
             </View>
-            // </View>
         )
     }
 }

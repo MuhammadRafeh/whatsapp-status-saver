@@ -64,11 +64,9 @@ const App = () => {
         button.stop();
       }
     });
-    console.log(isSubmit)
     if (isSubmit && whichWhatsApp != whichWhatsAppInitialValue) {
       storeData(whichWhatsApp);
       dispatch(setMedia(true));
-      console.log(2323)
     }
 
     setModalVisible(!isModalVisible);

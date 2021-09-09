@@ -4,7 +4,6 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } fr
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const TabBarIcon = props => {
-    console.log(props)
     const translateX = useSharedValue(-4);
     const scale = useSharedValue(0);
     useEffect(() => {
@@ -12,18 +11,10 @@ const TabBarIcon = props => {
             scale.value = withTiming(1, {duration: 600})
     }, [])
     const style = useAnimatedStyle(() => (
-        {
-            transform: [
-                { translateX: translateX.value }
-            ]
-        }
+        { transform: [ { translateX: translateX.value } ] }
     ))
     const iconStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {scale: scale.value}
-            ]
-        }
+        return { transform: [ {scale: scale.value} ] }
     });
     return (
         <View style={{ alignItems: 'center', flexDirection: 'row' }}>

@@ -2,10 +2,8 @@ import writeExternalStoragePermission from "../permissions/writeExternalStorage"
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// await AsyncStorage.setItem('@directory', saveDirectory)
-
 export const sorting = (arr) => {
-    arr.sort(function (a, b) { //sorting Desc
+    arr.sort(function (a, b) { //Latest Sorting
         if (new Date(a.time) > new Date(b.time)) {
             return -1;
         }
@@ -15,7 +13,6 @@ export const sorting = (arr) => {
         return 0;
     });
 }
-
 
 // Call this if user opens app for first time and set choose other directory from options!
 export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
@@ -52,7 +49,6 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
 
     let datas = [];
     let saveDirectory = '';
-    const promises = [];
     for (const directory of directories) {//directory = string
         try {
             const data = await RNFS.readDir(directory);
@@ -66,9 +62,7 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
         return { videos: [], images: [] }
     }
     return await fetchDataFromDirectory(datas);
-
 }
-
 
 const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
     const isGranted = await writeExternalStoragePermission();
@@ -87,13 +81,11 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
                 data = [...dirData];
             }
 
-        } catch (err) {
-        }
+        } catch (err) {}
     } else {
         data = [...isComingFromSetupDirectory];
     }
     if (data.length == 0) return { videos: [], images: [] }
-
     const images = [];
     const videos = [];
     let imgId = 0;
@@ -103,14 +95,12 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
             if (obj.name.split('.')[1] != 'nomedia') {
                 if (obj.name.split('.')[1] == 'jpg') {
                     images.push({
-                        id: imgId++,
                         name: obj.name,
                         path: obj.path,
                         time: obj.mtime,
                     });
                 } else if (obj.name.split('.')[1] == 'mp4') {
                     videos.push({
-                        id: vidId++,
                         name: obj.name,
                         path: obj.path,
                         time: obj.mtime,
@@ -119,10 +109,8 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
             }
         }
     });
-
     sorting(images)
     sorting(videos)
-
     return { videos, images }
 };
 
