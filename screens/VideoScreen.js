@@ -118,31 +118,27 @@ const VideoScreen = props => {
 
     const panHandler = useAnimatedGestureHandler({
         onActive: (e) => {
-            translationY.value = e.translationY;
-            scrollTo(list, 0, scrollY.value + (-translationY.value), false)
+            scrollTo(list, 0, scrollY.value + (-e.translationY), false)
         },
         onFinish: (e) => {
-            const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index also gives bad values
-            // console.log('currentIndex', index, 'scrollHeight', scrollHeight.value)
-            console.log('------->' ,index)
+            const currentScroll = (scrollY.value + (-e.translationY)) / scrollHeight.value;
+            const index = Math.round(currentScroll) //index also gives bad values
             let nextItem = 0;
             if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
-                console.log('1sr')
-
-                if (Math.max(index, (scrollY.value + (-translationY.value)) / scrollHeight.value) == index){
+                if (Math.max(index, currentScroll) == index){
                     nextItem = ((index) * scrollHeight.value)
                 } else {
                     nextItem = ((index) * scrollHeight.value) + scrollHeight.value
                 }
             } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
-                console.log('2nd')
-
-                nextItem = ((index - 1) * scrollHeight.value)
+                if (Math.min(index, currentScroll) == currentScroll){
+                    nextItem = ((index - 1) * scrollHeight.value)
+                } else {
+                    nextItem = (index * scrollHeight.value)
+                }
             } else if (index <= videosData.length - 1 && index >= 0) {
-                console.log('3rd')
 
                 nextItem = ((index) * scrollHeight.value)
-                console.log('3rd', index)
             }
             scrollTo(list, 0, nextItem, true)
             scrollY.value = nextItem
