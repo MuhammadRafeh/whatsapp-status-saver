@@ -12,7 +12,6 @@ const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
     const scrollY = useSharedValue(0);
-    const translationY = useSharedValue(0);
     const scrollHeight = useSharedValue();
 
     const [storeVideos, isSetupDirectory] = useSelector(state => [state.media.videos, state.media.isSetupDirectory])
@@ -125,10 +124,10 @@ const VideoScreen = props => {
             const index = Math.round(currentScroll) //index also gives bad values
             let nextItem = 0;
             if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
-                if (Math.max(index, currentScroll) == index){
-                    nextItem = ((index) * scrollHeight.value)
-                } else {
+                if (Math.max(index, currentScroll) == currentScroll){
                     nextItem = ((index) * scrollHeight.value) + scrollHeight.value
+                } else {
+                    nextItem = ((index) * scrollHeight.value)
                 }
             } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
                 if (Math.min(index, currentScroll) == currentScroll){
