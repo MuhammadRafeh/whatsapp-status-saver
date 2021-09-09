@@ -65,9 +65,9 @@ const VideoScreen = props => {
         setViewableIndex(isSetupDirectory ? 0 : viewableIndex)//Display first video after setup directory
         if (isSetupDirectory) {
             scrollY.value = 0
-            if (!navigation.isFocused() && storeVideos.length > 1){
+            if (!navigation.isFocused() && storeVideos.length > 1) {
                 navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                    tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'VIDEOS'} />
                 })
             } else {
                 navigation.setOptions({
@@ -87,7 +87,7 @@ const VideoScreen = props => {
             } else {
                 isTheirAnyNeedToScrollToTop.current = true;
                 navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                    tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'VIDEOS'} />
                 })
             }
         } else {
@@ -109,7 +109,7 @@ const VideoScreen = props => {
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (e) => {
             const offsetY = e.contentOffset.y;
-            const index = Math.round(offsetY / videoHeight)
+            const index = Math.round(offsetY / scrollHeight.value)
             if (index != viewableIndex) {
                 runOnJS(setViewableIndex)(index)
             }
@@ -123,27 +123,29 @@ const VideoScreen = props => {
         },
         onFinish: (e) => {
             const index = Math.round((scrollY.value + (-translationY.value)) / scrollHeight.value) //index also gives bad values
-            if (e.velocityY < -0.20 && (index<videosData.length-1 && index>=0 )) {//going down
-                console.log(index, scrollHeight.value)
+            // console.log('currentIndex', index, 'scrollHeight', scrollHeight.value)
+            console.log('------->' ,index)
+            let nextItem = 0;
+            if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
+                console.log('1sr')
 
-                const nextItem = ((index) * scrollHeight.value) + scrollHeight.value
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
+                if (Math.max(index, (scrollY.value + (-translationY.value)) / scrollHeight.value) == index){
+                    nextItem = ((index) * scrollHeight.value)
+                } else {
+                    nextItem = ((index) * scrollHeight.value) + scrollHeight.value
+                }
+            } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
+                console.log('2nd')
 
-            } else if (e.velocityY > 0.20 && (index<=videosData.length-1 && index>0)) { //going up
+                nextItem = ((index - 1) * scrollHeight.value)
+            } else if (index <= videosData.length - 1 && index >= 0) {
+                console.log('3rd')
 
-                const nextItem = ((index - 1) * scrollHeight.value)
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
-
-            } else if (index<=videosData.length-1 && index>=0)  {
-                const nextItem = ((index) * scrollHeight.value)
-                scrollTo(list, 0, nextItem, true)
-                scrollY.value = nextItem
-                return;
+                nextItem = ((index) * scrollHeight.value)
+                console.log('3rd', index)
             }
+            scrollTo(list, 0, nextItem, true)
+            scrollY.value = nextItem
         }
     });
 
