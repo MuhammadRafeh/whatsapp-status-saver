@@ -6,17 +6,15 @@ const Tab = createMaterialTopTabNavigator();
 
 function MyTabs() {
     return (
-        <>
-            <Tab.Navigator
-                tabBarOptions={{
-                    style: { backgroundColor: 'black' },
-                    activeTintColor: 'white'
-                }}>
-                <Tab.Screen name="Videos" component={VideoScreen}
-                  />
-                <Tab.Screen name="Images" component={ImageScreen} />
-            </Tab.Navigator>
-        </>
+        <Tab.Navigator
+            tabBarOptions={{
+                style: { backgroundColor: 'black' },
+                activeTintColor: 'white'
+            }}>
+            <Tab.Screen name="Videos" component={VideoScreen}
+            />
+            <Tab.Screen name="Images" component={ImageScreen} />
+        </Tab.Navigator>
     );
 }
 

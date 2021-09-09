@@ -1,10 +1,6 @@
 import Sound from 'react-native-sound'
 
-var button = new Sound('button.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-        return;
-    }
-});
+var button = new Sound('button.mp3', Sound.MAIN_BUNDLE);
 
 button.setVolume(1);
 

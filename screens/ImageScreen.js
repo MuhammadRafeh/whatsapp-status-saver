@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Image from '../components/Image';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
@@ -7,7 +7,7 @@ import TabBarIcon from '../components/TabBarIcon';
 
 class ImageScreen extends React.Component {
     state = {
-        imagesData: [], //[{id, name, path, time},...]
+        imagesData: [], //[{name, path, time},...]
         isSetupDirectory: false
     }
 
@@ -86,7 +86,7 @@ class ImageScreen extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        imagesData: state.media.images, //[{id, name, path, time},...]
+        imagesData: state.media.images, //[{name, path, time},...]
         isSetupDirectory: state.media.isSetupDirectory
     }
 }
