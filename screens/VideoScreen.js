@@ -69,6 +69,10 @@ const VideoScreen = props => {
                 navigation.setOptions({
                     tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
                 })
+            } else {
+                navigation.setOptions({
+                    tabBarLabel: undefined
+                })
             }
         }
     }, [storeVideos])

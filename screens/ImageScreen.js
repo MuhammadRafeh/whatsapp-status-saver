@@ -45,10 +45,16 @@ class ImageScreen extends React.Component {
             }
         } else {
             this.dataLength = this.state.imagesData.length;
-            if (this.props.isSetupDirectory && !this.props.navigation.isFocused() && this.state.imagesData.length > 1){
-                this.props.navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
-                })
+            if (this.props.isSetupDirectory) {
+                if (!this.props.navigation.isFocused() && this.state.imagesData.length > 1){
+                    this.props.navigation.setOptions({
+                        tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
+                    })
+                } else {
+                    this.props.navigation.setOptions({
+                        tabBarLabel: undefined
+                    })
+                }
             }
         }
     }
