@@ -33,7 +33,7 @@ const TabBarIcon = props => {
                 </Text>
             </Animated.View>
             <Animated.View style={iconStyle}>
-                <Icon name={'md-add-circle'} color={props.color} />
+                <Icon name={'md-notifications-circle'} color={props.color} />
             </Animated.View>
         </View>
     );

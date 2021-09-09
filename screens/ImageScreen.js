@@ -8,6 +8,7 @@ import TabBarIcon from '../components/TabBarIcon';
 class ImageScreen extends React.Component {
     state = {
         imagesData: [], //[{id, name, path, time},...]
+        isSetupDirectory: false
     }
 
     isTheirAnyNeedToScrollToTop = false;
@@ -25,7 +26,8 @@ class ImageScreen extends React.Component {
     static getDerivedStateFromProps(props, currentState) {
         if (JSON.stringify(props.imagesData) === JSON.stringify(currentState.imagesData)) return null;
         return {
-            imagesData: [...props.imagesData]
+            imagesData: [...props.imagesData],
+            isSetupDirectory: props.isSetupDirectory
         }
     }
 
@@ -38,11 +40,16 @@ class ImageScreen extends React.Component {
             } else {
                 this.isTheirAnyNeedToScrollToTop = true;
                 this.props.navigation.setOptions({
-                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
+                    tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'IMAGES'} />
                 })
             }
         } else {
-                this.dataLength = this.state.imagesData.length;
+            this.dataLength = this.state.imagesData.length;
+            if (this.props.isSetupDirectory && !this.props.navigation.isFocused() && this.state.imagesData.length > 1){
+                this.props.navigation.setOptions({
+                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
+                })
+            }
         }
     }
 
@@ -73,7 +80,8 @@ class ImageScreen extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        imagesData: state.media.images //[{id, name, path, time},...]
+        imagesData: state.media.images, //[{id, name, path, time},...]
+        isSetupDirectory: state.media.isSetupDirectory
     }
 }
 

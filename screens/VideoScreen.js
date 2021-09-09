@@ -65,6 +65,11 @@ const VideoScreen = props => {
         setViewableIndex(isSetupDirectory ? 0 : viewableIndex)//Display first video after setup directory
         if (isSetupDirectory) {
             scrollY.value = 0
+            if (!navigation.isFocused() && storeVideos.length > 1){
+                navigation.setOptions({
+                    tabBarLabel: ({color}) => <TabBarIcon color={color} title={'VIDEOS'}/>
+                })
+            }
         }
     }, [storeVideos])
 
