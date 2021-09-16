@@ -4,20 +4,7 @@
  *
  * @format
  */
-//Default configurations
-// module.exports = {
-//   transformer: {
-//     getTransformOptions: async () => ({
-//       transform: {
-//         experimentalImportSupport: false,
-//         inlineRequires: true,
-//       },
-//     }),
-//   },
-// };
-
 const { getDefaultConfig } = require("metro-config");
-
 module.exports = (async () => {
   const {
     resolver: { sourceExts, assetExts }
