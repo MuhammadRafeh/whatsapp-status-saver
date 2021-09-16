@@ -1,23 +1,22 @@
 import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import download from '../helperFunctions/download';
 import share from '../helperFunctions/share';
 const Buttons = React.memo((props) => {
     return (
         <>
-            <TouchableOpacity style={[styles.containerOutset, {bottom: props.share ? props.share : 110  }]} onPress={share.bind(null, props.source)}>
+            <TouchableOpacity style={[styles.containerOutset, { bottom: props.share ? props.share : 110 }]} onPress={share.bind(null, props.source)}>
                 <View style={styles.iconContainer}>
-                    <Icon name={'ios-arrow-redo-outline'} size={40} color={'white'} />
+                    <Image source={require('../assets/share.png')} resizeMode={'contain'} style={{ width: 40, height: 40, tintColor: 'white' }} />
                     <View style={{ width: '39%' }}>
                         <Text style={styles.actions} adjustsFontSizeToFit={true} numberOfLines={1}>Share</Text>
                     </View>
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.containerOutset, { bottom: props.downL ? props.downL: 35 }]} onPress={download.bind(null, props.source)}>
+            <TouchableOpacity style={[styles.containerOutset, { bottom: props.downL ? props.downL : 35 }]} onPress={download.bind(null, props.source)}>
                 <View style={styles.iconContainer}>
-                    <Icon name={'ios-download-outline'} size={40} color={'white'} />
+                    <Image source={require('../assets/download.png')} resizeMode={'contain'} style={{ width: 40, height: 40, tintColor: 'white', marginTop: 2 }} />
                     <View style={{ width: '66%' }}>
                         <Text style={styles.actions} adjustsFontSizeToFit={true} numberOfLines={1}>Download</Text>
                     </View>

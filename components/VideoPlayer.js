@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, StyleSheet, Image } from 'react-native';
 import Video from 'react-native-video'
 import ProgressBar from 'react-native-progress/Bar';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Buttons from './Buttons';
 
 function secondsToTime(time) {
@@ -53,11 +52,11 @@ class PlayerVideo extends React.PureComponent {
     }
 
     handleEnd = () => {
+        this.props.moveToNext(this.props.index)
         this.setState({
             paused: true
         })
         this.player.seek(0);
-        this.props.moveToNext(this.props.index)
     }
 
     handleProgress = (progress) => {
@@ -91,7 +90,7 @@ class PlayerVideo extends React.PureComponent {
                 </View>
                 <View style={[styles.controls, { top: this.props.height - 48 }]}>
                     <TouchableWithoutFeedback onPress={this.handleMainButtonTouch}>
-                        <Icon name={!this.state.paused ? 'pause' : 'play'} size={30} color={'#FFF'} />
+                        <Image source={!this.state.paused ? require('../assets/pause.png') : require('../assets/play.png')} style={{ tintColor: 'white', width: 25, height: 25 }} />
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={this.handleProgressPress}>
                         <View>

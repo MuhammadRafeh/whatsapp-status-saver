@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Button, StatusBar, AppState, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Button, StatusBar, AppState, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import TopTabNavigator from './navigators/TopTabNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import Tick from './assets/tick.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -165,9 +164,7 @@ const App = () => {
           <TouchableOpacity onPress={() => {
             toggleModal();
           }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
-            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
-              <Icon name={'settings'} size={23} color={'white'} />
-            </Text>
+            <Image source={require('./assets/settings.png')} style={{overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1}} resizeMode={'contain'}/>
           </TouchableOpacity>
       </View>
       <NavigationContainer>
