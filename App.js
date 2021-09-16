@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   label: {
     color: 'white',
     fontSize: 19,
-    fontFamily: 'FontAwesome5_Solid'
+    fontWeight: 'bold'
   },
   flex1: {
     flex: 1
