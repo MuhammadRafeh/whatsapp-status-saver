@@ -162,22 +162,13 @@ const App = () => {
         <View style={styles.labelContainer}>
           <Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>WhatsApp Status Saver</Text>
         </View>
-        <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={() => {
             toggleModal();
-          }} style={{ paddingHorizontal: 10, paddingTop: 15, paddingLeft: 10 }}>
+          }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
             <Text numberOfLines={1} adjustsFontSizeToFit={true}>
               <Icon name={'settings'} size={23} color={'white'} />
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            toggleModal();
-          }} style={{ paddingLeft: 10, paddingRight: 15, paddingTop: 15 }}>
-            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
-              <Icon name={'ios-information-circle'} size={25} color={'white'} />
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
       <NavigationContainer>
         <TopTabNavigator />
@@ -206,18 +197,12 @@ const styles = StyleSheet.create({
   labelContainer: {
     marginTop: 15,
     paddingLeft: 15,
-    width: '50%'
+    width: '60%'
   },
   label: {
     color: 'white',
     fontSize: 19,
     fontFamily: 'FontAwesome5_Solid'
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    width: '50%',
   },
   flex1: {
     flex: 1
