@@ -9,6 +9,7 @@ import button from './sounds/playSoundFunc';
 import { Provider, useDispatch } from "react-redux";
 import store from './redux/store';
 import { setMedia } from './redux/actions';
+import admob, { MaxAdContentRating, InterstitialAd, TestIds, AdEventType } from '@react-native-firebase/admob';
 
 const storeData = async (value) => {
   try {
@@ -16,6 +17,12 @@ const storeData = async (value) => {
   } catch (e) {
   }
 }
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3370162349335133~2588811453';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
 
 const App = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -32,6 +39,12 @@ const App = () => {
   const handleAppStateChange = (newState) => {
     if (newState === "active") {
       dispatch(setMedia());
+      try{
+        interstitial.show();
+      } catch(err) {
+        interstitial.load();
+      }
+      
     }
   }
 
@@ -74,9 +87,21 @@ const App = () => {
   useEffect(() => {
     getData();
     dispatch(setMedia(true));
+
     AppState.addEventListener('change', handleAppStateChange);
 
-    return () => AppState.removeEventListener('change', handleAppStateChange)
+    admob()
+    .setRequestConfiguration({
+      maxAdContentRating: MaxAdContentRating.PG,
+      tagForChildDirectedTreatment: true,
+      tagForUnderAgeOfConsent: true,
+    })
+    .then(() => { });
+    interstitial.load();
+    
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange)
+    }
   }, [])
 
   const handleOptionPress = type => {
@@ -97,7 +122,6 @@ const App = () => {
       setWhichWhatsApp('Ywhatsapp')
     }
   }
-
   return (
     <>
       <Modal isVisible={isModalVisible} useNativeDriver={true} onBackButtonPress={toggleModal.bind(null, false)}>
@@ -161,11 +185,11 @@ const App = () => {
         <View style={styles.labelContainer}>
           <Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>WhatsApp Status Saver</Text>
         </View>
-          <TouchableOpacity onPress={() => {
-            toggleModal();
-          }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
-            <Image source={require('./assets/settings.png')} style={{overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1}} resizeMode={'contain'}/>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          toggleModal();
+        }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
+          <Image source={require('./assets/settings.png')} style={{ overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1 }} resizeMode={'contain'} />
+        </TouchableOpacity>
       </View>
       <NavigationContainer>
         <TopTabNavigator />
@@ -176,9 +200,9 @@ const App = () => {
 
 const AppWrapper = () => {
   return (
-      <Provider store={store}>
-        <App />
-      </Provider>
+    <Provider store={store}>
+      <App />
+    </Provider>
   )
 }
 
