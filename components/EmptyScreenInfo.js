@@ -1,13 +1,15 @@
 import React from 'react';
 import { Text, View, Dimensions, StyleSheet } from 'react-native';
 import EmptyFolder from '../assets/search.svg';
+import Ads from './Ads';
 
 const { height } = Dimensions.get('window');
 
 const EmptyScreenInfo = () => {
     return (
         <View style={styles.container}>
-            <View style={{ marginBottom: 40 }}>
+            <Ads/>
+            <View style={{ marginBottom: 40, marginTop:10 }}>
                 <EmptyFolder width={200} height={height / 4.5} />
             </View>
             <View style={styles.width}>

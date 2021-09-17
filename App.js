@@ -9,7 +9,7 @@ import button from './sounds/playSoundFunc';
 import { Provider, useDispatch } from "react-redux";
 import store from './redux/store';
 import { setMedia } from './redux/actions';
-import admob, { MaxAdContentRating, InterstitialAd, TestIds, AdEventType } from '@react-native-firebase/admob';
+import admob, { MaxAdContentRating, InterstitialAd, TestIds } from '@react-native-firebase/admob';
 
 const storeData = async (value) => {
   try {
@@ -44,7 +44,6 @@ const App = () => {
       } catch(err) {
         interstitial.load();
       }
-      
     }
   }
 
@@ -187,6 +186,11 @@ const App = () => {
         </View>
         <TouchableOpacity onPress={() => {
           toggleModal();
+          try{
+            interstitial.show();
+          } catch(err) {
+            interstitial.load();
+          }
         }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
           <Image source={require('./assets/settings.png')} style={{ overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1 }} resizeMode={'contain'} />
         </TouchableOpacity>
