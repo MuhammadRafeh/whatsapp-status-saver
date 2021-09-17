@@ -17,7 +17,7 @@ const storeData = async (value) => {
   } catch (e) {
   }
 }
-const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3370162349335133~2588811453';
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3370162349335133/5596395974';
 
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,
