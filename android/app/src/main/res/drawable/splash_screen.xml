@@ -4,11 +4,9 @@
     <item
         android:drawable="@android:color/black"/>
 
-    <item 
-    android:bottom="150dp">
-        <bitmap
-            android:src="@mipmap/ic_launcher"
-            android:gravity="center"/>
-    </item>
+    <item
+        android:drawable="@drawable/splash_logo"
+        android:gravity="center"
+        android:bottom="200dp"/>
 
 </layer-list>
