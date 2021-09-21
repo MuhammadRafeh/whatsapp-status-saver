@@ -172,7 +172,7 @@ const App = () => {
           </View>
 
           <View style={{ width: '80%' }}>
-            <Button title="Done" onPress={toggleModal.bind(null, true)} color={'grey'} />
+            <Button title="Save" onPress={toggleModal.bind(null, true)} color={'grey'} />
           </View>
         </View>
       </Modal>
