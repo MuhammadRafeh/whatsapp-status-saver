@@ -138,8 +138,8 @@ android {
         applicationId "com.whatsapp_status_saver"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "3.0"
+        versionCode 4
+        versionName "1.0.1"
     }
     splits {
         abi {

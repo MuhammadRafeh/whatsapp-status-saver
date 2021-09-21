@@ -9,4 +9,13 @@
         android:gravity="center"
         android:bottom="200dp"/>
 
+ 
+    <item 
+        android:bottom="50dp"
+    >
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/label"/>
+    </item>
+
 </layer-list>
