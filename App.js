@@ -39,11 +39,6 @@ const App = () => {
   const handleAppStateChange = (newState) => {
     if (newState === "active") {
       dispatch(setMedia());
-      try{
-        interstitial.show();
-      } catch(err) {
-        interstitial.load();
-      }
     }
   }
 
@@ -96,7 +91,6 @@ const App = () => {
       tagForUnderAgeOfConsent: true,
     })
     .then(() => { });
-    interstitial.load();
     
     return () => {
       AppState.removeEventListener('change', handleAppStateChange)
