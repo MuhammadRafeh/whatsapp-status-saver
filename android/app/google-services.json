@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "366922372802",
+    "project_id": "whatsapp-status-saver-68305",
+    "storage_bucket": "whatsapp-status-saver-68305.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366922372802:android:d88ac4ca24b5f8c4b34d5b",
+        "android_client_info": {
+          "package_name": "com.whatsapp_status_saver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366922372802-98unh9h64tncg8nvs0rgal521mvbo2ch.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMcVM-IJD3OKNjcSsk9rEl_vCLABiR_yw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366922372802-98unh9h64tncg8nvs0rgal521mvbo2ch.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

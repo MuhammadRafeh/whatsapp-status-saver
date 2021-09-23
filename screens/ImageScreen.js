@@ -4,6 +4,7 @@ import Image from '../components/Image';
 import { connect } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
 import TabBarIcon from '../components/TabBarIcon';
+import Ads from '../components/Ads';
 
 class ImageScreen extends React.Component {
     state = {
@@ -46,9 +47,9 @@ class ImageScreen extends React.Component {
         } else {
             this.dataLength = this.state.imagesData.length;
             if (this.props.isSetupDirectory) {
-                if (!this.props.navigation.isFocused() && this.state.imagesData.length > 1){
+                if (!this.props.navigation.isFocused() && this.state.imagesData.length > 1) {
                     this.props.navigation.setOptions({
-                        tabBarLabel: ({color}) => <TabBarIcon color={color} title={'IMAGES'}/>
+                        tabBarLabel: ({ color }) => <TabBarIcon color={color} title={'IMAGES'} />
                     })
                 } else {
                     this.props.navigation.setOptions({
@@ -69,11 +70,15 @@ class ImageScreen extends React.Component {
         >
             {
                 this.state.imagesData.length != 0 ? (
-                    <ScrollView ref={ref => this.list = ref}>
-                        {
-                            this.state.imagesData.map((img, index) => <Image key={index} source={img.path} />)
-                        }
-                    </ScrollView>
+                    <>
+                        <ScrollView ref={ref => this.list = ref}>
+                            <Ads />
+                            {
+                                this.state.imagesData.map((img, index) => <Image key={index} source={img.path} />)
+                            }
+                            <Ads />
+                        </ScrollView>
+                    </>
                 ) : (
                     <View style={styles.emptyStyle}>
                         <EmptyScreenInfo />

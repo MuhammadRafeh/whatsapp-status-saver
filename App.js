@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Button, StatusBar, AppState, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Button, StatusBar, AppState, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import TopTabNavigator from './navigators/TopTabNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import Tick from './assets/tick.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +9,7 @@ import button from './sounds/playSoundFunc';
 import { Provider, useDispatch } from "react-redux";
 import store from './redux/store';
 import { setMedia } from './redux/actions';
+import admob, { MaxAdContentRating, InterstitialAd, TestIds } from '@react-native-firebase/admob';
 
 const storeData = async (value) => {
   try {
@@ -17,6 +17,12 @@ const storeData = async (value) => {
   } catch (e) {
   }
 }
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3370162349335133/5596395974';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
 
 const App = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -33,6 +39,11 @@ const App = () => {
   const handleAppStateChange = (newState) => {
     if (newState === "active") {
       dispatch(setMedia());
+      try{
+        interstitial.show();
+      } catch(err) {
+        interstitial.load();
+      }
     }
   }
 
@@ -75,9 +86,21 @@ const App = () => {
   useEffect(() => {
     getData();
     dispatch(setMedia(true));
+
     AppState.addEventListener('change', handleAppStateChange);
 
-    return () => AppState.removeEventListener('change', handleAppStateChange)
+    admob()
+    .setRequestConfiguration({
+      maxAdContentRating: MaxAdContentRating.PG,
+      tagForChildDirectedTreatment: true,
+      tagForUnderAgeOfConsent: true,
+    })
+    .then(() => { });
+    interstitial.load();
+    
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange)
+    }
   }, [])
 
   const handleOptionPress = type => {
@@ -98,7 +121,6 @@ const App = () => {
       setWhichWhatsApp('Ywhatsapp')
     }
   }
-
   return (
     <>
       <Modal isVisible={isModalVisible} useNativeDriver={true} onBackButtonPress={toggleModal.bind(null, false)}>
@@ -150,7 +172,7 @@ const App = () => {
           </View>
 
           <View style={{ width: '80%' }}>
-            <Button title="Done" onPress={toggleModal.bind(null, true)} color={'grey'} />
+            <Button title="Save" onPress={toggleModal.bind(null, true)} color={'grey'} />
           </View>
         </View>
       </Modal>
@@ -162,22 +184,16 @@ const App = () => {
         <View style={styles.labelContainer}>
           <Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>WhatsApp Status Saver</Text>
         </View>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={() => {
-            toggleModal();
-          }} style={{ paddingHorizontal: 10, paddingTop: 15, paddingLeft: 10 }}>
-            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
-              <Icon name={'settings'} size={23} color={'white'} />
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            toggleModal();
-          }} style={{ paddingLeft: 10, paddingRight: 15, paddingTop: 15 }}>
-            <Text numberOfLines={1} adjustsFontSizeToFit={true}>
-              <Icon name={'ios-information-circle'} size={25} color={'white'} />
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => {
+          toggleModal();
+          try{
+            interstitial.show();
+          } catch(err) {
+            interstitial.load();
+          }
+        }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
+          <Image source={require('./assets/settings.png')} style={{ overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1 }} resizeMode={'contain'} />
+        </TouchableOpacity>
       </View>
       <NavigationContainer>
         <TopTabNavigator />
@@ -188,9 +204,9 @@ const App = () => {
 
 const AppWrapper = () => {
   return (
-      <Provider store={store}>
-        <App />
-      </Provider>
+    <Provider store={store}>
+      <App />
+    </Provider>
   )
 }
 
@@ -206,18 +222,12 @@ const styles = StyleSheet.create({
   labelContainer: {
     marginTop: 15,
     paddingLeft: 15,
-    width: '50%'
+    width: '60%'
   },
   label: {
     color: 'white',
     fontSize: 19,
-    fontFamily: 'FontAwesome5_Solid'
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    width: '50%',
+    fontWeight: 'bold'
   },
   flex1: {
     flex: 1

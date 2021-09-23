@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 const TabBarIcon = props => {
     const translateX = useSharedValue(-4);
@@ -24,7 +23,7 @@ const TabBarIcon = props => {
                 </Text>
             </Animated.View>
             <Animated.View style={iconStyle}>
-                <Icon name={'md-notifications-circle'} color={props.color} />
+                <Image source={require('../assets/dot.png')} style={{tintColor: props.color, width: 10, height: 10}} resizeMode={'contain'} />
             </Animated.View>
         </View>
     );
