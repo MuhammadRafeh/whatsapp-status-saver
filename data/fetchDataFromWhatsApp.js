@@ -88,8 +88,6 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
     if (data.length == 0) return { videos: [], images: [] }
     const images = [];
     const videos = [];
-    let imgId = 0;
-    let vidId = 0;
     data.forEach((obj) => {
         if (obj.isFile()) {
             if (obj.name.split('.')[1] != 'nomedia') {
