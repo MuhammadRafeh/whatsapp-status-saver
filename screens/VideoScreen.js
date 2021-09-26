@@ -8,6 +8,7 @@ import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useShare
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import TabBarIcon from '../components/TabBarIcon';
 import Box from '../components/Box';
+import Ads from '../components/Ads';
 const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
@@ -150,7 +151,9 @@ const VideoScreen = props => {
         setViewableIndex(index);
         const nextItem = index * videoHeight;
         scrollY.value = nextItem;
-        list.current.scrollTo({ x: 0, y: nextItem })
+        setTimeout(() => {
+            list.current.scrollTo({ x: 0, y: nextItem, animated: false })
+        }, 1000)
     }
 
     return <View
@@ -200,7 +203,7 @@ const VideoScreen = props => {
                         }
                     </Animated.ScrollView>) : (
                         <ScrollView ref={list} contentContainerStyle={{ marginTop: 1 }}>
-                            { //row*2 || row*2+1
+                            {
                                 Array(Math.ceil(videosData.length / 2)).fill(0).map((i, row) => (
                                     <View style={{ flexDirection: 'row' }} key={row}>
                                         <Box index={row * 2} source={videosData[row * 2].path} handlePress={handlePress} />
@@ -212,6 +215,7 @@ const VideoScreen = props => {
                                     </View>
                                 ))
                             }
+                            <Ads/>
                         </ScrollView>
                     )
             ) : (
