@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity, BackHandler } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, BackHandler } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
