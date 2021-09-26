@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity, BackHandler } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
@@ -29,6 +29,22 @@ const VideoScreen = props => {
     const isTheirAnyNeedToScrollToTop = useRef(false);
     const dataLength = useRef(0);
     const list = useAnimatedRef();
+
+    const handleBackButtonClick = () => {
+        if (isSwipeMode) {
+            setIsSwipeMode(false);
+            return true //  Preventing hardware back button to go back
+        } else {
+            return false //Going back
+        }
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        }
+    }, [isSwipeMode])
 
     useEffect(() => {
         const blur = navigation.addListener('blur', e => {
@@ -189,7 +205,7 @@ const VideoScreen = props => {
                                             </Animated.View>
                                         </PanGestureHandler>
                                         <View style={styles.backContainer}>
-                                            <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{width: 40}}>
+                                            <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{ width: 40 }}>
                                                 <Image
                                                     source={require('../assets/left.png')}
                                                     style={{ tintColor: 'white', width: 20, marginLeft: 10 }}
@@ -215,7 +231,7 @@ const VideoScreen = props => {
                                     </View>
                                 ))
                             }
-                            <Ads/>
+                            <Ads />
                         </ScrollView>
                     )
             ) : (
