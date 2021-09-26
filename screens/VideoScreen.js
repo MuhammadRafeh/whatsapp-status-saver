@@ -155,7 +155,6 @@ const VideoScreen = props => {
                     nextItem = (index * scrollHeight.value)
                 }
             } else if (index <= videosData.length - 1 && index >= 0) {
-
                 nextItem = ((index) * scrollHeight.value)
             }
             scrollTo(list, 0, nextItem, true)
