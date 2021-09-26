@@ -10,6 +10,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import Box from '../components/Box';
 import Ads from '../components/Ads';
 import BackContainer, { conStyle } from '../components/BackContainer';
+import button from '../sounds/playSoundFunc';
 const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
@@ -212,7 +213,14 @@ const VideoScreen = props => {
                                 }
                             </Animated.ScrollView>
                             <View style={conStyle}>
-                                <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{ width: 40 }}>
+                                <TouchableOpacity onPress={() => {
+                                    button.play((success) => {
+                                        if (success) {
+                                            button.stop();
+                                        }
+                                    });
+                                    setIsSwipeMode(false);
+                                }} style={{ width: 40 }}>
                                     <BackContainer />
                                 </TouchableOpacity>
                             </View>

@@ -7,6 +7,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import Ads from '../components/Ads';
 import Box from '../components/Box';
 import BackContainer, { conStyle } from '../components/BackContainer';
+import button from '../sounds/playSoundFunc';
 
 class ImageScreen extends React.Component {
     state = {
@@ -17,7 +18,7 @@ class ImageScreen extends React.Component {
 
     handleBackButtonClick = () => {
         if (this.state.isShowSlider) {
-            this.setState({isShowSlider: false})
+            this.setState({ isShowSlider: false })
             return true
         } else {
             return false
@@ -103,7 +104,14 @@ class ImageScreen extends React.Component {
                                 <Ads />
                             </ScrollView>
                             <View style={conStyle}>
-                                <TouchableOpacity onPress={() => { this.setState({ isShowSlider: false }) }} style={{ width: 40 }}>
+                                <TouchableOpacity onPress={() => {
+                                    this.setState({ isShowSlider: false })
+                                    button.play((success) => {
+                                        if (success) {
+                                            button.stop();
+                                        }
+                                    });
+                                }} style={{ width: 40 }}>
                                     <BackContainer />
                                 </TouchableOpacity>
                             </View>
