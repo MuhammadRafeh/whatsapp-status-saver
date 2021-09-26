@@ -4,7 +4,6 @@ import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-nat
 const { width, height } = Dimensions.get('window');
 
 const Box = props => {
-    console.log(props.source)
     return (
         <View style={styles.Box}>
             <TouchableOpacity

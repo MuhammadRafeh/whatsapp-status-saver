@@ -9,6 +9,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import TabBarIcon from '../components/TabBarIcon';
 import Box from '../components/Box';
 import Ads from '../components/Ads';
+import BackContainer, { conStyle } from '../components/BackContainer';
 const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
@@ -183,41 +184,41 @@ const VideoScreen = props => {
         {
             videosData.length != 0 ? (
                 isSwipeMode ?
-                    (<Animated.ScrollView
-                        decelerationRate={'fast'}
-                        scrollEventThrottle={16}
-                        onScroll={scrollHandler}
-                        scrollEnabled={false}
-                        ref={list}
-                    >
-                        {
-                            videosData.map((data, index) => {
-                                return (
-                                    <View key={index}>
-                                        <PanGestureHandler onGestureEvent={panHandler}>
-                                            <Animated.View>
-                                                <PlayerVideo
-                                                    moveToNext={moveToNext}
-                                                    source={data.path}
-                                                    height={videoHeight ? videoHeight : height - 35}
-                                                    index={index}
-                                                    isViewable={viewableIndex == index && focused ? true : false} />
-                                            </Animated.View>
-                                        </PanGestureHandler>
-                                        <View style={styles.backContainer}>
-                                            <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{ width: 40 }}>
-                                                <Image
-                                                    source={require('../assets/left.png')}
-                                                    style={{ tintColor: 'white', width: 20, marginLeft: 10 }}
-                                                    resizeMode="contain"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                )
-                            })
-                        }
-                    </Animated.ScrollView>) : (
+                    (
+                        <>
+                            <Animated.ScrollView
+                                decelerationRate={'fast'}
+                                scrollEventThrottle={16}
+                                onScroll={scrollHandler}
+                                scrollEnabled={false}
+                                ref={list}
+                            >
+                                {
+                                    videosData.map((data, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <PanGestureHandler onGestureEvent={panHandler}>
+                                                    <Animated.View>
+                                                        <PlayerVideo
+                                                            moveToNext={moveToNext}
+                                                            source={data.path}
+                                                            height={videoHeight ? videoHeight : height - 35}
+                                                            index={index}
+                                                            isViewable={viewableIndex == index && focused ? true : false} />
+                                                    </Animated.View>
+                                                </PanGestureHandler>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </Animated.ScrollView>
+                            <View style={conStyle}>
+                                <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{ width: 40 }}>
+                                    <BackContainer />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    ) : (
                         <ScrollView ref={list} contentContainerStyle={{ marginTop: 1 }}>
                             {
                                 Array(Math.ceil(videosData.length / 2)).fill(0).map((i, row) => (
@@ -253,15 +254,5 @@ const styles = StyleSheet.create({
     emptyStyle: {
         flex: 1,
         justifyContent: 'center'
-    },
-    backContainer: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        height: 40,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        paddingLeft: 7
     }
 })
