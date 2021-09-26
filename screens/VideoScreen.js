@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
@@ -7,7 +7,7 @@ import EmptyScreenInfo from '../components/EmptyScreenInfo';
 import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useSharedValue, useAnimatedRef, scrollTo, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import TabBarIcon from '../components/TabBarIcon';
-
+import Box from '../components/Box';
 const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
@@ -23,6 +23,7 @@ const VideoScreen = props => {
     const [viewableIndexWas, setViewableIndexWas] = useState(-1)  //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
     const [focused, setFocused] = useState(true)
     const [videoHeight, setVideoHeight] = useState(height)
+    const [isSwipeMode, setIsSwipeMode] = useState(false);
 
     const isTheirAnyNeedToScrollToTop = useRef(false);
     const dataLength = useRef(0);
@@ -124,13 +125,13 @@ const VideoScreen = props => {
             const index = Math.round(currentScroll) //index also gives bad values
             let nextItem = 0;
             if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
-                if (Math.max(index, currentScroll) == currentScroll){
+                if (Math.max(index, currentScroll) == currentScroll) {
                     nextItem = ((index) * scrollHeight.value) + scrollHeight.value
                 } else {
                     nextItem = ((index) * scrollHeight.value)
                 }
             } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
-                if (Math.min(index, currentScroll) == currentScroll){
+                if (Math.min(index, currentScroll) == currentScroll) {
                     nextItem = ((index - 1) * scrollHeight.value)
                 } else {
                     nextItem = (index * scrollHeight.value)
@@ -144,6 +145,14 @@ const VideoScreen = props => {
         }
     });
 
+    const handlePress = index => {
+        setIsSwipeMode(true);
+        setViewableIndex(index);
+        const nextItem = index * videoHeight;
+        scrollY.value = nextItem;
+        list.current.scrollTo({ x: 0, y: nextItem })
+    }
+
     return <View
         onLayout={(e) => {
             const { height } = e.nativeEvent.layout;
@@ -154,32 +163,57 @@ const VideoScreen = props => {
     >
         {
             videosData.length != 0 ? (
-                <Animated.ScrollView
-                    decelerationRate={'fast'}
-                    scrollEventThrottle={16}
-                    onScroll={scrollHandler}
-                    scrollEnabled={false}
-                    ref={list}
-                >
-                    {
-                        videosData.map((data, index) => {
-                            return (
-                                <View key={index}>
-                                    <PanGestureHandler onGestureEvent={panHandler}>
-                                        <Animated.View>
-                                            <PlayerVideo
-                                                moveToNext={moveToNext}
-                                                source={data.path}
-                                                height={videoHeight ? videoHeight : height - 35}
-                                                index={index}
-                                                isViewable={viewableIndex == index && focused ? true : false} />
-                                        </Animated.View>
-                                    </PanGestureHandler>
-                                </View>
-                            )
-                        })
-                    }
-                </Animated.ScrollView>
+                isSwipeMode ?
+                    (<Animated.ScrollView
+                        decelerationRate={'fast'}
+                        scrollEventThrottle={16}
+                        onScroll={scrollHandler}
+                        scrollEnabled={false}
+                        ref={list}
+                    >
+                        {
+                            videosData.map((data, index) => {
+                                return (
+                                    <View key={index}>
+                                        <PanGestureHandler onGestureEvent={panHandler}>
+                                            <Animated.View>
+                                                <PlayerVideo
+                                                    moveToNext={moveToNext}
+                                                    source={data.path}
+                                                    height={videoHeight ? videoHeight : height - 35}
+                                                    index={index}
+                                                    isViewable={viewableIndex == index && focused ? true : false} />
+                                            </Animated.View>
+                                        </PanGestureHandler>
+                                        <View style={styles.backContainer}>
+                                            <TouchableOpacity onPress={setIsSwipeMode.bind(null, false)} style={{width: 40}}>
+                                                <Image
+                                                    source={require('../assets/left.png')}
+                                                    style={{ tintColor: 'white', width: 20, marginLeft: 10 }}
+                                                    resizeMode="contain"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                )
+                            })
+                        }
+                    </Animated.ScrollView>) : (
+                        <ScrollView ref={list} contentContainerStyle={{ marginTop: 1 }}>
+                            { //row*2 || row*2+1
+                                Array(Math.ceil(videosData.length / 2)).fill(0).map((i, row) => (
+                                    <View style={{ flexDirection: 'row' }} key={row}>
+                                        <Box index={row * 2} source={videosData[row * 2].path} handlePress={handlePress} />
+                                        {
+                                            videosData[row * 2 + 1] && (
+                                                <Box index={row * 2 + 1} source={videosData[row * 2 + 1].path} handlePress={handlePress} />
+                                            )
+                                        }
+                                    </View>
+                                ))
+                            }
+                        </ScrollView>
+                    )
             ) : (
                 <View style={styles.emptyStyle}>
                     <EmptyScreenInfo />
@@ -199,5 +233,15 @@ const styles = StyleSheet.create({
     emptyStyle: {
         flex: 1,
         justifyContent: 'center'
+    },
+    backContainer: {
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        height: 40,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        paddingLeft: 7
     }
 })
