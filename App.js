@@ -10,6 +10,7 @@ import { Provider, useDispatch } from "react-redux";
 import store from './redux/store';
 import { setMedia } from './redux/actions';
 import admob, { MaxAdContentRating, InterstitialAd, TestIds } from '@react-native-firebase/admob';
+import Snackbar from "react-native-snackbar";
 
 const storeData = async (value) => {
   try {
@@ -85,13 +86,13 @@ const App = () => {
     AppState.addEventListener('change', handleAppStateChange);
 
     admob()
-    .setRequestConfiguration({
-      maxAdContentRating: MaxAdContentRating.PG,
-      tagForChildDirectedTreatment: true,
-      tagForUnderAgeOfConsent: true,
-    })
-    .then(() => { });
-    
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.PG,
+        tagForChildDirectedTreatment: true,
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => { });
+
     return () => {
       AppState.removeEventListener('change', handleAppStateChange)
     }
@@ -178,16 +179,37 @@ const App = () => {
         <View style={styles.labelContainer}>
           <Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>WhatsApp Status Saver</Text>
         </View>
-        <TouchableOpacity onPress={() => {
-          toggleModal();
-          try{
-            interstitial.show();
-          } catch(err) {
-            interstitial.load();
-          }
-        }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
-          <Image source={require('./assets/settings.png')} style={{ overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1 }} resizeMode={'contain'} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <TouchableOpacity
+            style={{ backgroundColor: 'grey', padding: 2, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}
+            onPress={() => {
+              button.play((success) => {
+                if (success) {
+                  button.stop();
+                }
+              });
+              dispatch(setMedia());
+              Snackbar.show({
+                text: 'Refreshed!',
+                duration: Snackbar.LENGTH_SHORT,
+              });
+            }}
+          >
+            <Text style={{ fontWeight: 'bold', color: 'white' }}>
+              Refresh
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            toggleModal();
+            try {
+              interstitial.show();
+            } catch (err) {
+              interstitial.load();
+            }
+          }} style={{ paddingLeft: 18, paddingRight: 15, paddingTop: 15 }}>
+            <Image source={require('./assets/settings.png')} style={{ overlayColor: 'white', tintColor: 'white', width: 19, height: 19, flex: 1 }} resizeMode={'contain'} />
+          </TouchableOpacity>
+        </View>
       </View>
       <NavigationContainer>
         <TopTabNavigator />
@@ -216,7 +238,7 @@ const styles = StyleSheet.create({
   labelContainer: {
     marginTop: 15,
     paddingLeft: 15,
-    width: '60%'
+    width: '50%'
   },
   label: {
     color: 'white',

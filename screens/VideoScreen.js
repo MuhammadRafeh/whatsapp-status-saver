@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, BackHandler } from 'react-native';
 import PlayerVideo from '../components/VideoPlayer';
 import { useSelector } from 'react-redux';
 import EmptyScreenInfo from '../components/EmptyScreenInfo';
@@ -7,7 +7,10 @@ import EmptyScreenInfo from '../components/EmptyScreenInfo';
 import Animated, { useAnimatedGestureHandler, useAnimatedScrollHandler, useSharedValue, useAnimatedRef, scrollTo, runOnJS } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import TabBarIcon from '../components/TabBarIcon';
-
+import Box from '../components/Box';
+import Ads from '../components/Ads';
+import BackContainer, { conStyle } from '../components/BackContainer';
+import button from '../sounds/playSoundFunc';
 const { height } = Dimensions.get('window');
 
 const VideoScreen = props => {
@@ -23,10 +26,27 @@ const VideoScreen = props => {
     const [viewableIndexWas, setViewableIndexWas] = useState(-1)  //when viewableIndex will be -1 then to keep track of that using viewableIndexWas.
     const [focused, setFocused] = useState(true)
     const [videoHeight, setVideoHeight] = useState(height)
+    const [isSwipeMode, setIsSwipeMode] = useState(false);
 
     const isTheirAnyNeedToScrollToTop = useRef(false);
     const dataLength = useRef(0);
     const list = useAnimatedRef();
+
+    const handleBackButtonClick = () => {
+        if (isSwipeMode) {
+            setIsSwipeMode(false);
+            return true //  Preventing hardware back button to go back
+        } else {
+            return false //Going back
+        }
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        }
+    }, [isSwipeMode])
 
     useEffect(() => {
         const blur = navigation.addListener('blur', e => {
@@ -124,25 +144,34 @@ const VideoScreen = props => {
             const index = Math.round(currentScroll) //index also gives bad values
             let nextItem = 0;
             if (e.velocityY < -10 && (index < videosData.length - 1 && index >= 0)) {//going down
-                if (Math.max(index, currentScroll) == currentScroll){
+                if (Math.max(index, currentScroll) == currentScroll) {
                     nextItem = ((index) * scrollHeight.value) + scrollHeight.value
                 } else {
                     nextItem = ((index) * scrollHeight.value)
                 }
             } else if (e.velocityY > 10 && (index <= videosData.length - 1 && index > 0)) { //going up
-                if (Math.min(index, currentScroll) == currentScroll){
+                if (Math.min(index, currentScroll) == currentScroll) {
                     nextItem = ((index - 1) * scrollHeight.value)
                 } else {
                     nextItem = (index * scrollHeight.value)
                 }
             } else if (index <= videosData.length - 1 && index >= 0) {
-
                 nextItem = ((index) * scrollHeight.value)
             }
             scrollTo(list, 0, nextItem, true)
             scrollY.value = nextItem
         }
     });
+
+    const handlePress = index => {
+        setIsSwipeMode(true);
+        setViewableIndex(index);
+        const nextItem = index * videoHeight;
+        scrollY.value = nextItem;
+        setTimeout(() => {
+            list.current.scrollTo({ x: 0, y: nextItem, animated: false })
+        }, 1000)
+    }
 
     return <View
         onLayout={(e) => {
@@ -154,32 +183,65 @@ const VideoScreen = props => {
     >
         {
             videosData.length != 0 ? (
-                <Animated.ScrollView
-                    decelerationRate={'fast'}
-                    scrollEventThrottle={16}
-                    onScroll={scrollHandler}
-                    scrollEnabled={false}
-                    ref={list}
-                >
-                    {
-                        videosData.map((data, index) => {
-                            return (
-                                <View key={index}>
-                                    <PanGestureHandler onGestureEvent={panHandler}>
-                                        <Animated.View>
-                                            <PlayerVideo
-                                                moveToNext={moveToNext}
-                                                source={data.path}
-                                                height={videoHeight ? videoHeight : height - 35}
-                                                index={index}
-                                                isViewable={viewableIndex == index && focused ? true : false} />
-                                        </Animated.View>
-                                    </PanGestureHandler>
-                                </View>
-                            )
-                        })
-                    }
-                </Animated.ScrollView>
+                isSwipeMode ?
+                    (
+                        <>
+                            <Animated.ScrollView
+                                decelerationRate={'fast'}
+                                scrollEventThrottle={16}
+                                onScroll={scrollHandler}
+                                scrollEnabled={false}
+                                ref={list}
+                            >
+                                {
+                                    videosData.map((data, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <PanGestureHandler onGestureEvent={panHandler}>
+                                                    <Animated.View>
+                                                        <PlayerVideo
+                                                            moveToNext={moveToNext}
+                                                            source={data.path}
+                                                            height={videoHeight ? videoHeight : height - 35}
+                                                            index={index}
+                                                            isViewable={viewableIndex == index && focused ? true : false} />
+                                                    </Animated.View>
+                                                </PanGestureHandler>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </Animated.ScrollView>
+                            <View style={conStyle}>
+                                <TouchableOpacity onPress={() => {
+                                    button.play((success) => {
+                                        if (success) {
+                                            button.stop();
+                                        }
+                                    });
+                                    setIsSwipeMode(false);
+                                }} style={{ width: 40 }}>
+                                    <BackContainer />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    ) : (
+                        <ScrollView ref={list} contentContainerStyle={{ marginTop: 1 }}>
+                            {
+                                Array(Math.ceil(videosData.length / 2)).fill(0).map((i, row) => (
+                                    <View style={{ flexDirection: 'row' }} key={row}>
+                                        <Box index={row * 2} source={videosData[row * 2].path} handlePress={handlePress} />
+                                        {
+                                            videosData[row * 2 + 1] && (
+                                                <Box index={row * 2 + 1} source={videosData[row * 2 + 1].path} handlePress={handlePress} />
+                                            )
+                                        }
+                                    </View>
+                                ))
+                            }
+                            <Ads />
+                        </ScrollView>
+                    )
             ) : (
                 <View style={styles.emptyStyle}>
                     <EmptyScreenInfo />

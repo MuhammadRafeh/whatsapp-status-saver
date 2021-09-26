@@ -5709,6 +5709,11 @@ react-native-share@^6.3.0:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-6.5.0.tgz#6e2ce73d03168fcade7b89cc1f9c4318089c2325"
   integrity sha512-T46Mn+ALx2Fg+2/ksWFtzxSYNl34Xe/PH8eabx6DsLuCTDxatyaUblmpzDBjTO4rIMuVuTGMtR4mzwKKZcB5ZA==
 
+react-native-snackbar@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-2.4.0.tgz#dd9687f5228e379ecd57678a921e546331681bcf"
+  integrity sha512-xEDIDxw0ubBHrsvzaMfrZlFoy+ai1WEJZQwyAsG55fqYxUfQM20h+V4v25u+/H/YKY7ZCRMdCZ8zB5JOnbvCQw==
+
 react-native-sound@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.11.1.tgz#e28427b3543fbf9fc6d7c96b27e79b27cd134e95"
