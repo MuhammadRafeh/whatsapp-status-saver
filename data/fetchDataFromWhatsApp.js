@@ -57,43 +57,46 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
             saveDirectory = directory;
             directoryDatas[directory] = datas;
         } catch (err) {
-            console.log(23)
             doProcess = false;
         }
     }
     if (doProcess) {
-        // if obj.name.split('.')[1] != 'nomedia'
         const list = Object.keys(directoryDatas);
-        const dir1 = directoryDatas[list[0]][0].name.split('.')[1];
-        const dir2 = directoryDatas[list[1]][0].name.split('.')[1];
-        if (dir1 == 'nomedia' && dir2 != 'nomedia') {
-            RNFS.unlink(list[1])
-                .catch((err) => {
-                });
-        } else if (dir1 != 'nomedia' && dir2 == 'nomedia'){
-            RNFS.unlink(list[0])
-            .catch((err) => {
-            });
-        } else if (directoryDatas[list[0]].length >= 1 && directoryDatas[list[1]].length >= 1) {
-            for (var i = 0; i < 2; i++) {
-                directoryDatas[list[i]].forEach((obj) => {
-                    if (obj.name.split('.')[1] == 'nomedia') {
-                        RNFS.unlink(directoryDatas[list[i]][0].path)
-                            .catch((err) => {
-                            });
-                        return;
-                    }
-                })
-            }
-        } else if (directoryDatas[list[0]].length == 0 || directoryDatas[list[1]].length == 0) {
+        if (directoryDatas[list[0]].length == 0 || directoryDatas[list[1]].length == 0) {
             if (directoryDatas[list[0]].length == 0) {
                 RNFS.unlink(list[0])
                     .catch((err) => {
                     });
+                saveDirectory = list[1]
             } else {
                 RNFS.unlink(list[1])
                     .catch((err) => {
                     });
+                saveDirectory = list[0]
+            }
+        } else {
+            const dir1 = directoryDatas[list[0]][0].name.split('.')[1];
+            const dir2 = directoryDatas[list[1]][0].name.split('.')[1];
+            if (dir1 == 'nomedia' && dir2 != 'nomedia') {
+                RNFS.unlink(list[1])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[0]
+            } else if (dir1 != 'nomedia' && dir2 == 'nomedia') {
+                RNFS.unlink(list[0])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[1]
+            } else { //Both Have greater length or equal to 1
+                for (var i = 0; i < 2; i++) {
+                    directoryDatas[list[i]].forEach((obj) => {
+                        if (obj.name.split('.')[0].trim() == '') { //nomedia file
+                            RNFS.unlink(obj.path)
+                                .catch((err) => {
+                                });
+                        }
+                    })
+                }
             }
         }
     }
