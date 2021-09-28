@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   labelContainer: {
     marginTop: 15,
     paddingLeft: 15,
-    width: '50%'
+    width: '60%'
   },
   label: {
     color: 'white',
