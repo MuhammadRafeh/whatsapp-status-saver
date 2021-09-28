@@ -181,7 +181,7 @@ const App = () => {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <TouchableOpacity
-            style={{ backgroundColor: 'grey', padding: 2, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}
+            style={{ backgroundColor: 'grey', padding: 2, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, borderRadius: 4 }}
             onPress={() => {
               button.play((success) => {
                 if (success) {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   labelContainer: {
     marginTop: 15,
     paddingLeft: 15,
-    width: '50%'
+    width: '60%'
   },
   label: {
     color: 'white',

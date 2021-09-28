@@ -46,7 +46,8 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
         directories.push(firstWhatsAppDirectory)
         directories.push(secondWhatsAppDirectory)
     }
-
+    const directoryDatas = {};
+    let doProcess = true
     let datas = [];
     let saveDirectory = '';
     for (const directory of directories) {//directory = string
@@ -54,11 +55,54 @@ export const directorySetup = async (type) => {// whatsapp, Bwhatsapp, Ywhatsapp
             const data = await RNFS.readDir(directory);
             datas = [...data]
             saveDirectory = directory;
+            directoryDatas[directory] = datas;
         } catch (err) {
+            doProcess = false;
         }
     }
+    if (doProcess) {
+        const list = Object.keys(directoryDatas);
+        if (directoryDatas[list[0]].length == 0 || directoryDatas[list[1]].length == 0) {
+            if (directoryDatas[list[0]].length == 0) {
+                RNFS.unlink(list[0])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[1]
+            } else {
+                RNFS.unlink(list[1])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[0]
+            }
+        } else {
+            const dir1 = directoryDatas[list[0]][0].name.split('.')[1];
+            const dir2 = directoryDatas[list[1]][0].name.split('.')[1];
+            if (dir1 == 'nomedia' && dir2 != 'nomedia') {
+                RNFS.unlink(list[1])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[0]
+            } else if (dir1 != 'nomedia' && dir2 == 'nomedia') {
+                RNFS.unlink(list[0])
+                    .catch((err) => {
+                    });
+                saveDirectory = list[1]
+            } else { //Both Have greater length or equal to 1
+                for (var i = 0; i < 2; i++) {
+                    directoryDatas[list[i]].forEach((obj) => {
+                        if (obj.name.split('.')[0].trim() == '') { //nomedia file
+                            RNFS.unlink(obj.path)
+                                .catch((err) => {
+                                });
+                        }
+                    })
+                }
+            }
+        }
+    }
+
     await AsyncStorage.setItem('@directory', saveDirectory)
-    if (datas.length == 0){
+    if (datas.length == 0) {
         return { videos: [], images: [] }
     }
     return await fetchDataFromDirectory(datas);
@@ -81,7 +125,7 @@ const fetchDataFromDirectory = async (isComingFromSetupDirectory = false) => {
                 data = [...dirData];
             }
 
-        } catch (err) {}
+        } catch (err) { }
     } else {
         data = [...isComingFromSetupDirectory];
     }

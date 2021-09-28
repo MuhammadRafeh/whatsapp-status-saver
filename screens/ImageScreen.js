@@ -154,6 +154,7 @@ export default connect(mapStateToProps, null)(ImageScreen);
 
 const styles = StyleSheet.create({
     screen: {
+        flex: 1,
         backgroundColor: '#111212',
     },
     emptyStyle: {
